@@ -1,0 +1,288 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Nathan Birkes",
+    "label": "Senior Software Engineer",
+    "image": "",
+    "email": "nbirkes@gmail.com",
+    "phone": "+1(254) 644-7382",
+    "url": "https://birk.es/",
+    "summary": "Proven ability to architect highly available distributed SaaS cloud systems, streamline CI/CD pipelines, and deliver scalable software solutions aligned with corporate priorities and regulatory compliance. Skilled in leading cross-functional teams through complex transformations by applying advanced methodologies in AWS, Terraform, and application development frameworks. Expertise in driving operational excellence by building regulatory-compliant systems, improving system performance, and implementing automation to enhance business agility. Known for fostering a kind, collaborative & feedback-driven culture to elevate team capabilities and sustain continuous innovation. Committed to translating vision into action by combining deep technical acumen with strong leadership and stakeholder engagement. ",
+    "location": {
+      "address": "9105 Links Cir.",
+      "postalCode": "TX 767078",
+      "city": "Waco",
+      "countryCode": "US",
+      "region": "Texas"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "nbirkes",
+        "url": "https://www.linkedin.com/in/nbirkes/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Otsuka Precision Health, Inc.",
+      "location": "Princeton, NJ",
+      "description": "",
+      "position": "Senior Manager / Software Engineer – Cloud",
+      "url": "",
+      "startDate": "2021",
+      "endDate": "2025",
+      "summary": "Lead CI/CD pipeline development using GitLab to deploy AWS ECS services across multiple platforms. Build Terraform modules to provision AWS resources integrated within deployment workflows. Design Django Rest Framework APIs using python with OpenAPI 3 documentation to enhance system interoperability. Develop scalable Next.js front-end applications using openapi-typescript code generation. Apply Domain Driven Design (DDD) methodologies to model business domains effectively. Support leadership with technical insights for inherited CRM systems. Mentor junior developers on engineering best practices and team collaboration. Facilitate continuous communication with stakeholders to align technical initiatives with business goals.",
+      "highlights": [
+        "Implemented a highly performant and HIPAA compliant multi-platform drug adherence analytics system by integrating reverse ETL and CI/CD pipelines to optimize data insights",
+        "Supported leadership strategic decision-making by providing critical analysis and recommendations on inherited CRM systems",
+        "Increased junior developer growth by mentoring on solid engineering principles and empathetic collaboration practices",
+        "Strengthened platform scalability by prioritizing company goals, urgent features, technical debt management, and onboarding strategies",
+        "Enhanced cloud engineering capabilities by achieving 1 AWS Certification"
+      ]
+    },
+    {
+      "name": "Carl Zeiss Meditec AG",
+      "location": "Temple, TX",
+      "description": "",
+      "position": "Senior Software Developer",
+      "url": "",
+      "startDate": "2017",
+      "endDate": "2021",
+      "summary": "Directed backend refactoring initiatives to unify CallistoEYE integration logic and improve customer experience in a highly regulated environment. Collaborated on rebuilding the medical document generation engine using React Hooks and ExpressJS technologies. Designed user-centric React.js applications to monitor device health through consolidated data dashboards. Conducted proactive error monitoring using AWS CloudWatch to prevent service disruptions. Developed staging and integration testing systems utilizing Selenium and ECS to ensure deployment reliability. Refactored cloud queueing systems using Lambda and SQS services to reduce system complexity and improve performance.",
+      "highlights": [
+        "Reduced diagnostic device event processing errors by 70% by implementing proactive monitoring and bug fixing strategies",
+        "Improved multi-tenant cloud infrastructure stability by executing critical system refactors",
+        "Enhanced department operational structure by taking initiative to organize workflows and improve team collaboration",
+        "Strengthened device performance and user satisfaction by delivering complete refactor of CallistoEYE integration",
+        "Advanced cloud infrastructure modernization by earning 1 AWS Certification"
+      ]
+    },
+    {
+      "name": "Carl Zeiss Meditec AG",
+      "location": "Temple, TX",
+      "description": "",
+      "position": "DevOps Engineer",
+      "url": "",
+      "startDate": "2017",
+      "endDate": "2019",
+      "summary": "As a key contributor to the ZEISS VERACITY Surgery Planner SaaS platform I designed ETL systems to process surgical procedure data and normalize NoSQL document structures into PostgreSQL databases supporting outcomes analytics UI. Developed mock EMR applications to enable customizable medical data inputs for cataract planning demonstrations. Deployed AWS infrastructure using Terraform and TypeScript, orchestrating containerized deployments through AWS ECS. Built and configured Lambda functions to enhance operational and application functionality. Refactored CI/CD pipelines to migrate from Lambda to ECS to boost reliability and reduce complexity. Designed and optimized PostgreSQL schemas by analyzing execution plans and resource utilization to enhance database performance. Deployed and managed DynamoDB with autoscaling capabilities to support application scalability.",
+      "highlights": [
+        "Improved automated integration testing speed by leading a major refactor to allow test parallelization",
+        "Achieved 2 AWS Certifications to validate expertise in cloud infrastructure and DevOps practices",
+        "Strengthened multi-tenant infrastructure management by developing advanced Terraform modules for IaC deployments",
+        "Enabled zero-downtime releases by architecting AWS ECS deployment strategies",
+        "Increased PostgreSQL database performance by creating optimized indices and refining execution plans"
+      ]
+    },
+    {
+      "name": "Late Model Restoration, Inc.",
+      "location": "Hewitt, TX",
+      "description": "",
+      "position": "Senior Developer / IT Director",
+      "url": "",
+      "startDate": "2009",
+      "endDate": "2017",
+      "summary": "Led technical teams to develop and refine a full Microsoft stack e-commerce solution supporting significant growth initiatives. Built and managed PCI compliant web applications from the ground up including domain management, SSL certificates, DNS configurations, database architecture, and server deployment for IIS and SQL Server environments. Automated critical functionality through unit and integration testing processes. Integrated diverse third-party APIs using advanced development patterns such as dependency injection and inversion of control. Designed scalable solutions using recognized design patterns to minimize redundancy and accelerate solution delivery. ",
+      "highlights": [
+        "Contributed to company growth by supporting expansion from less than $1M to $30M in annual sales",
+        "Advocated for company vision to deliver exceptional customer satisfaction through technological innovation and operational efficiency",
+        "Served as product owner for entire IT stack by ensuring accountability and facilitating enthusiastic team adoption",
+        "Improved customer experiences by offering alternative solutions or advising against ineffective feature requests",
+        "Developed multiple customer-facing and internal tools to reduce manual intervention and enhance service quality"
+      ]
+    },
+    {
+      "name": "Late Model Restoration, Inc.",
+      "location": "Hewitt, TX",
+      "description": "",
+      "position": "Developer / Webmaster / Web & Marketing Assistant",
+      "url": "",
+      "startDate": "2009",
+      "endDate": "2001",
+      "summary": "",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "institution": "McLennan Community College",
+      "url": "https://www.mclennan.edu",
+      "area": "Associate of Science in Computer Science",
+      "startDate": "2022",
+      "endDate": "2026 (expected)"
+    },
+    {
+      "institution": "McLennan Community College",
+      "url": "https://www.mclennan.edu",
+      "area": "Certificate in Computer Information Systems/Web Design",
+      "startDate": "2000",
+      "endDate": "2003"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "AWS Certified Developer",
+      "date": "2018 – 2020 / 2023 – 2026",
+      "issuer": "Amazon Web Services (AWS)",
+      "url": ""
+    },
+    {
+      "name": "AWS Certified Solutions Architect",
+      "date": "2017 – 2019",
+      "issuer": "Amazon Web Services (AWS)",
+      "url": ""
+    }
+  ],
+  "awards": [
+    {
+      "title": "",
+      "date": "",
+      "awarder": "",
+      "summary": ""
+    }
+  ],
+  "publications": [
+    {
+      "name": "",
+      "publisher": "",
+      "releaseDate": "",
+      "url": "",
+      "summary": ""
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages/Libraries",
+      "keywords": [
+        "TypeScript",
+        "C#",
+        "Python",
+        "React",
+        "Next.js",
+        "Node.js",
+        "deno",
+        "SQL",
+        "Terraform",
+        ".NET",
+        "ASP.NET",
+        "Bash",
+        "Django Rest Framework",
+        "OpenAPI TS",
+        "JavaScript",
+        "Prettier",
+        "ESLint",
+        "HTML",
+        "CSS",
+        "Mocha",
+        "Chai",
+        "Zod",
+        "SWR",
+        "Stored Procedures",
+        "Bootstrap",
+        "Material UI",
+        "Linq"
+      ]
+    },
+    {
+      "name": "OS/Tools",
+      "keywords": [
+        "AWS",
+        "Docker",
+        "Linux",
+        "Git",
+        "Lambda",
+        "EC2",
+        "S3",
+        "IAM",
+        "ECS",
+        "SNS",
+        "CloudWatch",
+        "VPC",
+        "SQS",
+        "StepFunctions",
+        "DynamoDB",
+        "RDS",
+        "Cognito",
+        "PostgreSQL",
+        "Visual Studio Code",
+        "npm",
+        "yarn",
+        "GitLab CI",
+        "CodeBuild",
+        "Windows Server",
+        "Visual Studio",
+        "WebStorm",
+        "ReSharper",
+        "MS-SQL Server",
+        "MySQL",
+        "Octopus Deploy",
+        "TeamCity",
+        "GraphQL"
+      ]
+    },
+    {
+      "name": "Technologies/Concepts",
+      "keywords": [
+        "Object-Oriented Programming",
+        "Unit & Integration Testing",
+        "Continuous Integration",
+        "RESTful API",
+        "RPC",
+        "Event-Driven Architecture",
+        "Functional Programming",
+        "Domain-Driven Design (DDD)",
+        "Dependency Injection",
+        "SOLID Principles"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Native speaker"
+    }
+  ],
+  "interests": [
+    {"name": "Object Oriented Programming"},
+    {"name": "Maintainable & Testable Code"},
+    {"name": "Cloud Infrastructure Architecture"},
+    {"name": "DevOps Strategy Development"},
+    {"name": "Application Performance Tuning"},
+    {"name": "Infrastructure as Code (IaC)"},
+    {"name": "AWS Solutions Engineering"},
+    {"name": "Team Building & Leadership"},
+    {"name": "Database Optimization Techniques"},
+    {"name": "Serverless Architecture Deployment"},
+    {"name": "System Integration Testing"},
+    {"name": "Stakeholder Engagement"},
+    {"name": "Software Quality Assurance"},
+    {"name": "Scalability & Reliability"},
+    {"name": "Tech Team Mentorship"}
+  ],
+  "references": [
+    {
+      "name": "",
+      "reference": ""
+    }
+  ],
+  "projects": [
+    {
+      "name": "",
+      "description": "",
+      "highlights": [],
+      "keywords": [],
+      "startDate": "",
+      "endDate": "",
+      "url": "",
+      "roles": [],
+      "entity": "",
+      "type": ""
+    }
+  ],
+  "meta": {
+    "canonical": "https://raw.githubusercontent.com/TBD",
+    "version": "v1.0.0",
+    "lastModified": ""
+  }
+}
