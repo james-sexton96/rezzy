@@ -4,10 +4,10 @@
     "name": "Nathan Birkes",
     "label": "Senior Software Engineer",
     "image": "",
-    "email": "nbirkes@gmail.com",
+    "email": "nbirkes@icloud.com",
     "phone": "+1(254) 644-7382",
     "url": "https://birk.es/",
-    "summary": "Proven ability to architect highly available distributed SaaS cloud systems, streamline CI/CD pipelines, and deliver scalable software solutions aligned with corporate priorities and regulatory compliance. Skilled in leading cross-functional teams through complex transformations by applying advanced methodologies in AWS, Terraform, and application development frameworks. Expertise in driving operational excellence by building regulatory-compliant systems, improving system performance, and implementing automation to enhance business agility. Known for fostering a kind, collaborative & feedback-driven culture to elevate team capabilities and sustain continuous innovation. Committed to translating vision into action by combining deep technical acumen with strong leadership and stakeholder engagement. ",
+    "summary": "Senior Software Engineer with over 20 years of experience specializing in scalable software solutions, CI/CD pipelines and cloud modernization. Known for leading high-performing teams with compassion and kindness and implementing regulatory-compliant systems that drive operational excellence. Seeking a senior role to leverage my expertise in OOP, application development frameworks, AWS & Terraform to deliver impactful software solutions.",
     "location": {
       "address": "9105 Links Cir.",
       "postalCode": "TX 767078",
@@ -98,8 +98,8 @@
       "description": "",
       "position": "Developer / Webmaster / Web & Marketing Assistant",
       "url": "",
-      "startDate": "2009",
-      "endDate": "2001",
+      "startDate": "2001",
+      "endDate": "2009",
       "summary": "",
       "highlights": []
     }
@@ -164,6 +164,7 @@
         "deno",
         "SQL",
         "Terraform",
+        "TypeChat",
         ".NET",
         "ASP.NET",
         "Bash",
@@ -281,7 +282,7 @@
     }
   ],
   "meta": {
-    "canonical": "https://raw.githubusercontent.com/TBD",
+    "canonical": "https://raw.githubusercontent.com/nbirkes/rezzy/refs/heads/main/resume.json",
     "version": "v1.0.0",
     "lastModified": ""
   }
