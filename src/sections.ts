@@ -1,37 +1,43 @@
-import {ResumeSchema} from "@kurone-kito/jsonresume-types";
-import {latexBannerComment, latex, latexList, latexNewCommand, latexSection} from './latex.ts';
+import { ResumeSchema } from "@kurone-kito/jsonresume-types";
+import {
+  latexBannerComment,
+  latexCommand,
+  latexList,
+  latexNewCommand,
+  latexSection,
+} from "./latex.ts";
 
-import {Education, Skill, Work} from './types.ts';
+import { Certificate, Education, Interest, Skill, Work } from "./types.ts";
 
-export function sections(resume: ResumeSchema): string[] {
+export function buildPreamble(resume: ResumeSchema): string[] {
   const { name, phone, email, url, profiles = [] } = resume.basics ?? {};
   const { region, city } = resume.basics?.location ?? {};
-  const hspace = latex("hspace", ["0em"]);
-  const rlap = latex("rlap", ["#1"]);
+  const hspace = latexCommand("hspace", ["0em"]);
+  const rlap = latexCommand("rlap", ["#1"]);
 
   const hrefs = [
-    latex("href", [`mailto:${email}`, email]),
-    latex("href", [url, url]),
-    ...profiles.map((it) => latex("href", [it.url, it.url])),
-  ];
+    latexCommand("href", [`mailto:${email}`, email]),
+    latexCommand("href", [url, url]),
+    ...profiles.map((it) => latexCommand("href", [it.url, it.url])),
+  ].join(" \\\\ ");
 
   return [
-    latex("documentclass", ["resume"]),
-    latex(
+    latexCommand("documentclass", ["resume"]),
+    latexCommand(
       "usepackage",
       ["geometry"],
       "left=0.4 in,top=0.4in,right=0.4 in,bottom=0.4in",
     ),
-    latex("usepackage", ["tabularx"]),
+    latexCommand("usepackage", ["tabularx"]),
     latexNewCommand("itab", 1, `${hspace}${rlap}`, "1"),
-    latex("name", [name ?? ""]),
-    latex("address", [`${phone ?? ""} \\\\ ${city}, ${region}`]),
-    latex("address", [hrefs.map((it) => it).join(" \\\\ ")]),
-    latex("begin", ["document"]),
+    latexCommand("name", [name]),
+    latexCommand("address", [`${phone} \\\\ ${city}, ${region}`]),
+    latexCommand("address", [hrefs]),
+    latexCommand("begin", ["document"]),
   ];
 }
 
-export function buildObjective(resume: ResumeSchema): string[] {
+export function buildObjectiveSection(resume: ResumeSchema): string[] {
   return latexSection("OBJECTIVE", [`{${resume.basics?.summary}}`]);
 }
 
@@ -43,91 +49,93 @@ export function buildEducationSection(resume: ResumeSchema): string[] {
 }
 
 function buildEducationLine(ed: Education): string {
-  return [
-    latex("textbf", [ed.area]),
-    `, ${ed.institution}`,
-    latex("hfill", [ed.startDate + " - " + ed.endDate]),
-    `\\\\`,
-  ].join(' ');
+  const area = latexCommand("textbf", [ed.area]);
+  const date = latexCommand("hfill", [`${ed.startDate} - ${ed.endDate}`]);
+  return`${area}, ${ed.institution} ${date} \\\\`;
 }
 
 export function buildCertificationsSection(resume: ResumeSchema): string[] {
-  const lines: string[] =
-    resume.certificates?.map((it) =>
-      `{\\bf ${it.name}}, ${it.issuer} \\hfill {${it.date}} \\\\`
-    ) ?? [];
-  return latexSection("Certifications", lines);
+  if (!resume.certificates?.length) return [];
+  const { certificates } = resume;
+  return latexSection("Certifications", certificates.map(buildCertificateLine));
 }
 
-export function buildAreasOfExpertiseSection(resume: ResumeSchema): string[] {
+export function buildCertificateLine(cert: Certificate): string {
+  const hfill = latexCommand("hfill");
+  const certName = latexCommand("textbf", [cert.name]);
+  return `${certName}, ${cert.issuer} ${hfill} {${cert.date}} \\\\`;
+}
+
+export function buildInterestsSection(resume: ResumeSchema): string[] {
   if (!resume.interests?.length) return [];
+  const { interests } = resume;
+  const textwidth = latexCommand("textwidth");
 
   const lines = [
-    "\\begin{table}[h]",
-    "\\centering",
-    "\\begin{tabularx}{\\textwidth}{XXX}",
-    ...resume.interests.map((it, i) =>
-      `${it.name} ${(i + 1) % 3 === 0 ? "\\\\" : "&"}`
-    ),
-    "\\end{tabularx}",
-    "\\end{table}",
+    latexCommand("begin", ["table"], "h"),
+    latexCommand("centering"),
+    latexCommand("begin", ["tabularx", textwidth, "XXX"]),
+    ...buildInterestLines(interests, 3),
+    latexCommand("end", ["tabularx"]),
+    latexCommand("end", ["table"]),
   ];
+
   return latexSection("Areas of Expertise", lines);
 }
 
-export function buildSkills(resume: ResumeSchema): string[] {
-  if (resume.skills?.length === 0) return [];
+function buildInterestLines(
+  interests: Interest[],
+  numColumns: number,
+): string[] {
+  const delim = (i: number) => (i + 1) % numColumns === 0 ? `\\\\` : `&`;
+  return interests.map((it, i) => `${it.name} ${delim(i)}`);
+}
 
-  const lines = resume.skills?.map((it) => {
-    if (it.keywords?.length === 0) return "";
-
-    return [
-      ...buildSkill(it),
-    ].join("\n");
-  }) ?? [];
+export function buildSkillsSection(resume: ResumeSchema): string[] {
+  if (!resume.skills?.length) return [];
 
   return latexSection("Skills", [
-    "\\begin{table}[h]",
-    "\\centering",
-    "\\begin{tabularx}{\\textwidth}{lX}",
-    ...lines,
-    "\\end{tabularx}",
-    "\\end{table}",
+    latexCommand("begin", ["table"], "h"),
+    latexCommand("centering"),
+    latexCommand("begin", ["tabularx", latexCommand("textwidth"), "lX"]),
+    ...resume.skills.map(buildSkill),
+    latexCommand("end", ["tabularx"]),
+    latexCommand("end", ["table"]),
   ]);
 }
 
-function buildSkill(skill: Skill): string[] {
-  if (!skill.name) return [];
-  return [
-    `\\textbf{${skill.name}} & ${
-      skill.keywords?.map((it) => it).join(", ")
-    } \\\\\\\\`,
-  ];
+function buildSkill(skill: Skill): string {
+  if (!skill.name) return "";
+  if (!skill.keywords?.length) return "";
+
+  const skillsStr = skill.keywords?.map((it) => it).join(", ");
+  return `${latexCommand("textbf", [skill.name])} & ${skillsStr} \\\\\\\\`;
 }
 
-export function buildExperience(resume: ResumeSchema): string[] {
+export function buildExperienceSection(resume: ResumeSchema): string[] {
   if (!resume.work?.length) return [];
-  return latexSection(
-    "EXPERIENCE",
-    resume.work.map((it) => buildWork(it)).flat(),
-  );
+  return latexSection("EXPERIENCE", resume.work.map(buildWork).flat());
 }
 
 function buildWork(work: Work): string[] {
   if (!work.name) return [];
   if (!work.position) return [];
 
+  const position = latexCommand("textbf", [work.position]);
+  const date = latexCommand("hfill", [`${work.startDate} - ${work.endDate}`]);
+  const location = latexCommand("textit", [work.location]);
+
   return [
     ...latexBannerComment(`Experience: ${work.name} - ${work.position}`),
-    `\\textbf{${work.position}} \\hfill ${work.startDate} - ${work.endDate}\\\\`,
-    `${work.name} \\hfill \\textit{${work.location}}\\\\`,
+    `${position} ${date} \\\\`,
+    `${work.name} ${latexCommand("hfill")} ${location} \\\\`,
     `{${work.summary}}`,
     ...latexList(work.highlights ?? []),
   ];
 }
 
-export function buildFooter(resume: ResumeSchema): string[] {
+export function buildFooter(_resume: ResumeSchema): string[] {
   return [
-    `\\end{document}`,
+    latexCommand("end", ["document"]),
   ];
 }

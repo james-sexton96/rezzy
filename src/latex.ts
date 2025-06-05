@@ -1,4 +1,6 @@
-export function latex(
+import { LATEX_ENVIRONMENTS } from "./constants.ts";
+
+export function latexCommand(
   command: string,
   args: Array<string | undefined> = [],
   options?: string,
@@ -6,7 +8,9 @@ export function latex(
   const opt = options ? `[${options}]` : ``;
   const nonEmptyArgs = args.filter((it) => it);
   const argStr = nonEmptyArgs.length ? `{${nonEmptyArgs.join("}{")}}` : ``;
-  return `\\${command}${opt}${argStr}`;
+  return LATEX_ENVIRONMENTS.some((it) => nonEmptyArgs.includes(it))
+    ? `\\${command}${argStr}${opt}`
+    : `\\${command}${opt}${argStr}`;
 }
 
 export function latexNewCommand(
@@ -24,9 +28,9 @@ export function latexSection(sectionName: string, lines: string[]): string[] {
   if (lines.length === 0) return [];
   return [
     ...latexBannerComment("Section: " + sectionName),
-    latex("begin", ["rSection", sectionName]),
+    latexCommand("begin", ["rSection", sectionName]),
     ...lines,
-    latex("end", ["rSection"]),
+    latexCommand("end", ["rSection"]),
   ];
 }
 
@@ -50,10 +54,10 @@ export function latexList(lines: string[]): string[] {
   if (!lines.length) return [];
 
   return [
-    latex("begin", ["itemize"]),
-    latex("setlength", [latex("itemsep"), "-3pt"]),
-    ...lines.map((it) => latex("item", [it])),
-    latex("end", ["itemize"]),
+    latexCommand("begin", ["itemize"]),
+    latexCommand("setlength", [latexCommand("itemsep"), "-3pt"]),
+    ...lines.map((it) => latexCommand("item", [it])),
+    latexCommand("end", ["itemize"]),
   ];
 }
 
@@ -70,20 +74,13 @@ export function latexEscapeCharsInObject<T extends Record<string, any>>(
   };
 
   const recurse = (input: any): any => {
-    if (typeof input === "string") {
-      return escapeString(input);
-    }
-
-    if (Array.isArray(input)) {
-      return input.map((item) => recurse(item));
-    }
+    if (typeof input === "string") return escapeString(input);
+    if (Array.isArray(input)) return input.map((item) => recurse(item));
 
     if (input && typeof input === "object") {
       const result: Record<string, any> = {};
       for (const key in input) {
-        if (input.hasOwnProperty(key)) {
-          result[key] = recurse(input[key]);
-        }
+        if (input.hasOwnProperty(key)) result[key] = recurse(input[key]);
       }
       return result;
     }
