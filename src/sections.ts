@@ -109,7 +109,7 @@ function buildSkill(skill: Skill): string {
   if (!skill.keywords?.length) return "";
 
   const skillsStr = skill.keywords?.map((it) => it).join(", ");
-  return `${latexCommand("textbf", [skill.name])} & ${skillsStr} \\\\\\\\`;
+  return `${latexCommand("textbf", [skill.name])} & ${skillsStr} \\\\`;
 }
 
 export function buildExperienceSection(resume: ResumeSchema): string[] {
