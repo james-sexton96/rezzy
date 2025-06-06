@@ -128,7 +128,7 @@ function buildWork(work: Work): string[] {
   return [
     ...latexBannerComment(`Experience: ${work.name} - ${work.position}`),
     `${position} ${date} \\\\`,
-    `${work.name} ${latexCommand("hfill")} ${location} \\\\`,
+    `${latexCommand('textit', [work.name])} ${latexCommand("hfill")} ${location} \\\\`,
     `{${work.summary}}`,
     ...latexList(work.highlights ?? []),
   ];
