@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import {latexCommand} from './src/latex.ts';
+import {latexCommand} from './latex.ts';
 
 Deno.test('latexCommand - 1', function addTest() {
   const expected = `\\cmd`;

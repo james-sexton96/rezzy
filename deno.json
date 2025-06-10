@@ -1,11 +1,16 @@
 {
   "tasks": {
     "dev": "deno run --watch main.ts",
-    "rezzy": "deno run --allow-read main.ts"
+    "rezzy": "deno run --allow-all src/main.ts rezzy",
+    "cover": "deno run --allow-all src/main.ts cover"
   },
   "imports": {
     "@jsonresume/schema": "npm:@jsonresume/schema@^1.2.1",
     "@kurone-kito/jsonresume-types": "npm:@kurone-kito/jsonresume-types@^0.4.0",
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/cli": "jsr:@std/cli@^1.0.19",
+    "openai": "npm:openai@^5.3.0",
+    "typechat": "npm:typechat@^0.1.1",
+    "zod": "npm:zod@^3.25.57"
   }
 }
