@@ -1,32 +1,38 @@
-import { Rezzy } from "./rezzy.ts";
-import { Cover } from "./cover.ts";
-import { parseArgs } from "jsr:@std/cli/parse-args";
-import { assert } from "@std/assert";
+import {Rezzy} from "./rezzy.ts";
+import {Cover} from "./cover.ts";
+import {parseArgs} from "jsr:@std/cli/parse-args";
+import {assert} from "@std/assert";
 
 const cmdStr = Deno.args[0];
 
 const flags = parseArgs(Deno.args, {
-  string: ["url"],
+  string: ["jd", "source"],
 });
 
-if (!cmdStr) throw new Error(`Command required: rezzy or cover`);
+assert(cmdStr, `Command required: rezzy or cover`);
+assert(flags.source, `--source is required`);
 
-const jsonData = JSON.parse(await Deno.readTextFile("../resume/resume.json"));
-const rezzy = new Rezzy(jsonData);
-const cover = new Cover(jsonData);
+const resumeJson = await Rezzy.fetchResume(flags.source);
 
 const CMD_MAP: Record<string, () => Promise<string[]>> = {
-  rezzy: () => rezzy.buildRezzy(),
+  rezzy: () => {
+    const rezzy = new Rezzy(resumeJson);
+    return Promise.resolve(rezzy.buildRezzy());
+  },
   cover: () => {
-    assert(flags.url, "Url is required for cover");
-    return cover.buildCover(flags.url);
+    assert(flags.jd, "--jd is required for cover");
+    const cover = new Cover(resumeJson);
+    return cover.buildCover(flags.jd);
   },
 };
 
 const command = CMD_MAP[cmdStr];
 
-assert(command(), `Command not recognized: ${cmdStr}`);
+assert(command, `Command not recognized: ${cmdStr}`);
 
-// if (!command) throw new Error(`Command not recognized: ${cmdStr}`);
+const lines = (await command()).join("\n");
+const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
-console.log((await command()).join("\n"));
+Deno.writeTextFileSync(`/tmp/${cmdStr}_${timestamp}.tex`, lines);
+
+console.log(lines);

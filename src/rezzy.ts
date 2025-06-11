@@ -15,7 +15,7 @@ import { LATEX_CHARS } from "./constants.ts";
 export class Rezzy {
   constructor(private resume: ResumeSchema) {}
 
-  async buildRezzy(): Promise<string[]> {
+  buildRezzy(): string[] {
     const escapedResume = latexEscapeCharsInObject(this.resume, LATEX_CHARS);
     return [
       ...buildPreamble(escapedResume),
@@ -27,5 +27,15 @@ export class Rezzy {
       ...buildCertificationsSection(escapedResume),
       ...buildFooter(escapedResume),
     ];
+  }
+
+  static async fetchResume(source: string): Promise<ResumeSchema> {
+    if (source.startsWith("http")) {
+      const response = await fetch(source);
+      if (!response.ok) throw new Error(response.statusText);
+      return response.json();
+    } else {
+      return JSON.parse(await Deno.readTextFile(source));
+    }
   }
 }
