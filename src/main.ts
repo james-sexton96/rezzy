@@ -1,7 +1,8 @@
 import {Rezzy} from "./rezzy.ts";
-import {Cover} from "./cover.ts";
+import {RezzyCover} from "./rezzy_cover.ts";
 import {parseArgs} from "jsr:@std/cli/parse-args";
 import {assert} from "@std/assert";
+import {logTempFile} from './logger.ts';
 
 const cmdStr = Deno.args[0];
 
@@ -21,7 +22,7 @@ const CMD_MAP: Record<string, () => Promise<string[]>> = {
   },
   cover: () => {
     assert(flags.jd, "--jd is required for cover");
-    const cover = new Cover(resumeJson);
+    const cover = new RezzyCover(resumeJson);
     return cover.buildCover(flags.jd);
   },
 };
@@ -31,8 +32,6 @@ const command = CMD_MAP[cmdStr];
 assert(command, `Command not recognized: ${cmdStr}`);
 
 const lines = (await command()).join("\n");
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-
-Deno.writeTextFileSync(`/tmp/${cmdStr}_${timestamp}.tex`, lines);
+logTempFile(cmdStr, lines);
 
 console.log(lines);
