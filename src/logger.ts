@@ -1,5 +1,7 @@
 
-export function logTempFile(prefix: string, data: string): void {
+export function logTempFile(prefix: string, data: string): string {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  Deno.writeTextFileSync(`/tmp/${prefix}_${timestamp}.txt`, data);
+  const path = `/tmp/${prefix}_${timestamp}.txt`
+  Deno.writeTextFileSync(path, data);
+  return path;
 }

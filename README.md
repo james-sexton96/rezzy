@@ -2,25 +2,27 @@
 
 AI powered JSON Resume to LaTeX resume and cover letter generator.
 
-https://jsonresume.org/ - JSON Resume Schema
-
-https://www.overleaf.com/ - Compatible LaTeX pdf generator
-
-
 ## Resume Generation
-Converts JSON Resume to LaTeX
+Converts JSON Resume to LaTeX and optionally uses OpanAI to build LaTeX cover letter using your JSON Resume and the supplied job description text file
 
 ```
-deno task rezzy --source <JSON Resume path or url>
+Usage: deno task rezzy [OPTIONS]... 
+
+Description:
+  rezzy - an AI powered JSON Resume to LaTeX resume and cover letter generator.
+
+Options:
+  --resume          Json Resume file path or url
+  --jd              Job description path to .txt file
+  --prompt          Optional AI prompt for cover letter generation 
+
+Examples:
+  deno task rezzy --resume ../resume.json
+  deno task rezzy --resume ../resume.json --jd ../jobs/job-desc.txt 
+  deno task rezzy --resume https://www.example.com/resume.json --jd ../jobs/job-desc.txt 
+  deno task rezzy --resume ../resume.json --jd ../jobs/job-desc.txt --prompt "Add bullet points to my cover letter describing why I am a good candidate for this job description"
 ```
 > ⚠️ **Note**: rezzy currently renders JSON Resume `interests` array items as the `Areas of Expertise` section.
-
-## Cover Letter Generation
-Uses OpanAI to build LaTeX cover letter using your JSON Resume and the supplied job description url
-
-```
-deno task cover  --source <JSON Resume path or url> --jd <job description url>
-```
 
 ## Dependencies
  - OpenAI - https://openai.com/

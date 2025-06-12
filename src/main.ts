@@ -1,37 +1,39 @@
-import {Rezzy} from "./rezzy.ts";
-import {RezzyCover} from "./rezzy_cover.ts";
-import {parseArgs} from "jsr:@std/cli/parse-args";
-import {assert} from "@std/assert";
-import {logTempFile} from './logger.ts';
-
-const cmdStr = Deno.args[0];
+import { Rezzy } from "./rezzy.ts";
+import { parseArgs } from "jsr:@std/cli/parse-args";
+import { assert } from "@std/assert";
+import { logTempFile } from "./logger.ts";
+import { fetchAiCoverLetter } from "./repos/openai_repo.ts";
+import { fetchResume } from "./repos/resume_repo.ts";
 
 const flags = parseArgs(Deno.args, {
-  string: ["jd", "source"],
+  string: ["resume", "jd", "prompt"],
 });
 
-assert(cmdStr, `Command required: rezzy or cover`);
-assert(flags.source, `--source is required`);
+assert(flags.resume, `--resume is required`);
 
-const resumeJson = await Rezzy.fetchResume(flags.source);
+const resumeJson = await fetchResume(flags.resume);
+const jobDescription = flags.jd ? Deno.readTextFileSync(flags.jd) : undefined;
+const letter = jobDescription
+  ? await fetchAiCoverLetter(jobDescription, resumeJson, flags.prompt)
+  : undefined;
+const rezzy = new Rezzy(resumeJson, letter);
+const result = rezzy.buildRezzyResult();
+const logPath = logTempFile(
+  "rezzy",
+  JSON.stringify(
+    {
+      input: { flags },
+      resume: result.latexResume.join("\n"),
+      letter: result.latexCoverLetter?.join("\n"),
+    },
+    null,
+    2,
+  ),
+);
+const lines = result.latexCoverLetter
+  ? result.latexCoverLetter
+  : result.latexResume;
 
-const CMD_MAP: Record<string, () => Promise<string[]>> = {
-  rezzy: () => {
-    const rezzy = new Rezzy(resumeJson);
-    return Promise.resolve(rezzy.buildRezzy());
-  },
-  cover: () => {
-    assert(flags.jd, "--jd is required for cover");
-    const cover = new RezzyCover(resumeJson);
-    return cover.buildCover(flags.jd);
-  },
-};
-
-const command = CMD_MAP[cmdStr];
-
-assert(command, `Command not recognized: ${cmdStr}`);
-
-const lines = (await command()).join("\n");
-logTempFile(cmdStr, lines);
-
-console.log(lines);
+console.log(lines.join("\n"));
+console.log("\n\n");
+console.log(`Data dump: ${logPath}`);

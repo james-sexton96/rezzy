@@ -11,11 +11,30 @@ import {
   buildSkillsSection,
 } from "./sections.ts";
 import { LATEX_CHARS } from "./constants.ts";
+import { CoverLetterSchema } from "./schemas.ts";
+import { LatexCoverLetterRenderer } from "./renderers/latex_cover_letter_renderer.ts";
+
+export interface RezzyResult {
+  latexResume: string[];
+  latexCoverLetter?: string[];
+}
 
 export class Rezzy {
-  constructor(private resume: ResumeSchema) {}
+  constructor(
+    private resume: ResumeSchema,
+    private letter?: CoverLetterSchema,
+  ) {}
 
-  buildRezzy(): string[] {
+  buildRezzyResult(): RezzyResult {
+    return {
+      latexResume: this.buildResume(),
+      latexCoverLetter: this.letter
+        ? new LatexCoverLetterRenderer(this.resume, this.letter).render()
+        : undefined,
+    };
+  }
+
+  buildResume(): string[] {
     const escapedResume = latexEscapeCharsInObject(this.resume, LATEX_CHARS);
     return [
       ...buildPreamble(escapedResume),
@@ -27,15 +46,5 @@ export class Rezzy {
       ...buildCertificationsSection(escapedResume),
       ...buildFooter(escapedResume),
     ];
-  }
-
-  static async fetchResume(source: string): Promise<ResumeSchema> {
-    if (source.startsWith("http")) {
-      const response = await fetch(source);
-      if (!response.ok) throw new Error(response.statusText);
-      return response.json();
-    } else {
-      return JSON.parse(await Deno.readTextFile(source));
-    }
   }
 }
