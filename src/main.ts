@@ -4,14 +4,41 @@ import { assert } from "@std/assert";
 import { logTempFile } from "./logger.ts";
 import { fetchAiCoverLetter } from "./repos/openai_repo.ts";
 import { fetchResume } from "./repos/resume_repo.ts";
+import { ResumeSchema } from "@kurone-kito/jsonresume-types";
 
 const flags = parseArgs(Deno.args, {
-  string: ["resume", "jd", "prompt"],
+  string: ["resume", "jd", "prompt", "document"],
 });
 
-assert(flags.resume, `--resume is required`);
+// Either resume or document must be provided
+assert(flags.resume || flags.document, `Either --resume or --document is required`);
+// Both resume and document cannot be provided at the same time
+assert(!(flags.resume && flags.document), `Cannot provide both --resume and --document at the same time`);
 
-const resumeJson = await fetchResume(flags.resume);
+let resumeJson: ResumeSchema;
+
+if (flags.resume) {
+  // Traditional flow: fetch resume from JSON file or URL
+  resumeJson = await fetchResume(flags.resume);
+} else {
+  // New flow: process document directly with OpenAI
+  try {
+    // Import the processDocumentWithOpenAI function
+    const { processDocumentWithOpenAI } = await import("./repos/document_repo.ts");
+
+    // Process the document directly with OpenAI
+    resumeJson = await processDocumentWithOpenAI(flags.document);
+
+    // Optionally save the converted JSON for reference
+    const jsonPath = flags.document.replace(/\.(pdf)$/i, '.json');
+    await Deno.writeTextFile(jsonPath, JSON.stringify(resumeJson, null, 2));
+    console.log(`Converted document saved as JSON: ${jsonPath}`);
+  } catch (error) {
+    console.error("Error processing document with OpenAI:", error);
+    throw new Error("Failed to process document with OpenAI.");
+  }
+}
+
 const jobDescription = flags.jd ? Deno.readTextFileSync(flags.jd) : undefined;
 const letter = jobDescription
   ? await fetchAiCoverLetter(jobDescription, resumeJson, flags.prompt)
