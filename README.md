@@ -73,6 +73,51 @@ If you encounter a "403 Forbidden" error, it may be because:
 2. Your API key doesn't have permission to use the specified model
 3. The model specified in OPENAI_MODEL environment variable is not available
 
+## Testing
+
+Tests are organized in a dedicated `test/` directory that mirrors the structure of the `src/` directory:
+
+```
+test/
+├── latex_test.ts
+├── main_test.ts
+├── test_utils.ts
+├── renderers/
+│   └── latex_cover_letter_renderer_test.ts
+├── repos/
+│   ├── document_repo_test.ts
+│   ├── openai_repo_test.ts
+│   └── resume_repo_test.ts
+└── utils/
+    └── openai_utils_test.ts
+```
+
+### Running Tests
+
+To run all tests:
+
+```bash
+deno task test
+```
+
+This will run all tests in the `test/` directory with the necessary permissions.
+
+### Writing Tests
+
+When adding new functionality, please add corresponding tests in the appropriate location in the `test/` directory. Tests should be named with the `_test.ts` suffix and should import the functions they're testing from the `src/` directory.
+
+For example, to test a function in `src/utils/example.ts`, create a file `test/utils/example_test.ts` with the following structure:
+
+```typescript
+import { assertEquals } from "@std/assert";
+import { functionToTest } from "../../src/utils/example.ts";
+
+Deno.test("functionToTest - description of test case", () => {
+  const result = functionToTest(input);
+  assertEquals(result, expectedOutput);
+});
+```
+
 ## Dependencies
  - OpenAI - https://openai.com/
  - TypeChat - https://microsoft.github.io/TypeChat/

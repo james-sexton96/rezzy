@@ -1,7 +1,8 @@
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
 import { z } from "zod";
 import { checkOpenAIEnv } from "../utils/openai_utils.ts";
-import OpenAI, { toFile, Shared } from "openai";
+import OpenAI, { toFile } from "openai";
+import type { ResponseFormatJSONSchema } from "openai/resources/shared";
 
 /**
  * JSON Schema for the resume format
@@ -142,10 +143,11 @@ const resumeJsonSchema = {
 
 /**
  * Extracts JSON content from a string that might contain markdown formatting
+ * (This is needed because LLMs often return markdown, even if you tell it NOT to.)
  * @param text The text that might contain markdown-formatted JSON
  * @returns The extracted JSON string
  */
-function extractJsonFromMarkdown(text: string): string {
+export function extractJsonFromMarkdown(text: string): string {
   // Check if the text contains a markdown code block
   const codeBlockRegex = /```(?:json)?\s*([\s\S]*?)```/;
   const match = text.match(codeBlockRegex);
@@ -182,16 +184,24 @@ function extractJsonFromMarkdown(text: string): string {
 /**
  * Processes a pdf document file directly with OpenAI
  * @param filePath The path to the document file
+ * @param openAIClientFn Optional function to create an OpenAI client (for testing)
+ * @param readFileFn Optional function to read a file (for testing)
+ * @param writeTextFileFn Optional function to write a text file (for testing)
  * @returns A promise that resolves to a ResumeSchema object
  */
-export async function processDocumentWithOpenAI(filePath: string): Promise<ResumeSchema> {
+export async function processDocumentWithOpenAI(
+  filePath: string,
+  openAIClientFn = (apiKey: string) => new OpenAI({ apiKey }),
+  readFileFn = Deno.readFile,
+  writeTextFileFn = Deno.writeTextFile
+): Promise<ResumeSchema> {
   console.log("Processing document with OpenAI...");
 
   // Check if OpenAI environment variables are valid
   checkOpenAIEnv();
 
   // Check file extension
-  const fileExtension = filePath.split('.').pop()?.toLowerCase();
+  const fileExtension = filePath.split('.').pop()?.toLowerCase() || '';
 
   // Map file extensions to MIME types
   // NOTE: only pdf supported for now
@@ -202,7 +212,7 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
   };
 
   // Check if the file extension is supported
-  if (!mimeTypeMap[fileExtension]) {
+  if (!fileExtension || !mimeTypeMap[fileExtension]) {
     throw new Error(`Unsupported file type: ${fileExtension}. Only the following file types are supported: ${Object.keys(mimeTypeMap).join(', ')}.`);
   }
 
@@ -213,13 +223,11 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
 
   try {
     // Create OpenAI client
-    const openai = new OpenAI({
-      apiKey: Deno.env.get("OPENAI_API_KEY"),
-    });
+    const openai = openAIClientFn(Deno.env.get("OPENAI_API_KEY") || "");
 
     // Read the document file
     console.log(`Reading ${fileExtension.toUpperCase()} file...`);
-    const fileBuffer = await Deno.readFile(filePath);
+    const fileBuffer = await readFileFn(filePath);
 
     // Create a File object from the buffer with the appropriate MIME type using toFile
     // Get the MIME type based on the file extension
@@ -240,7 +248,7 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
       console.log(`File uploaded successfully with ID: ${uploadedFile.id}`);
     } catch (error) {
       console.error("Error uploading file to OpenAI:", error);
-      throw new Error(`Failed to upload file to OpenAI: ${error.message}`);
+      throw new Error(`Failed to upload file to OpenAI: ${error instanceof Error ? error.message : String(error)}`);
     }
 
     // Ensure the file was uploaded successfully
@@ -249,7 +257,7 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
     }
 
     // Create a JSON schema response format
-    const responseFormatJsonSchema: Shared.ResponseFormatJSONSchema = {
+    const responseFormatJsonSchema: ResponseFormatJSONSchema = {
       type: 'json_schema',
       json_schema: {
         name: 'resume_schema',
@@ -326,15 +334,15 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
         const filename = `resume_${dateStr}_${timeStr}.json`;
 
         console.log(`Writing intermediate JSON to file: ${filename}...`);
-        await Deno.writeTextFile(filename, JSON.stringify(resumeJson, null, 2));
+        await writeTextFileFn(filename, JSON.stringify(resumeJson, null, 2));
         console.log(`Successfully wrote intermediate JSON to file: ${filename}`);
       } catch (writeError) {
         // Log the error but don't fail the process
-        console.warn(`Warning: Failed to write intermediate JSON to file: ${writeError.message}`);
+        console.warn(`Warning: Failed to write intermediate JSON to file: ${writeError instanceof Error ? writeError.message : String(writeError)}`);
       }
     } catch (error) {
       console.error("Error parsing OpenAI response as JSON:", error);
-      throw new Error(`Failed to parse OpenAI response as JSON: ${error.message}`);
+      throw new Error(`Failed to parse OpenAI response as JSON: ${error instanceof Error ? error.message : String(error)}`);
     }
 
     // Clean up the uploaded file to avoid accumulating files in the OpenAI account
@@ -350,6 +358,6 @@ export async function processDocumentWithOpenAI(filePath: string): Promise<Resum
     return resumeJson as ResumeSchema;
   } catch (error) {
     console.error("Error processing document with OpenAI:", error);
-    throw new Error(`Failed to process document with OpenAI: ${error.message}`);
+    throw new Error(`Failed to process document with OpenAI: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

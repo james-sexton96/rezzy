@@ -2,7 +2,8 @@
   "tasks": {
     "dev": "deno run --watch main.ts",
     "rezzy": "deno run --allow-all src/main.ts rezzy",
-    "cover": "deno run --allow-all src/main.ts cover"
+    "cover": "deno run --allow-all src/main.ts cover",
+    "unit_test": "deno test test/unit/ --allow-env --allow-read --allow-write --allow-net"
   },
   "imports": {
     "@jsonresume/schema": "npm:@jsonresume/schema@^1.2.1",

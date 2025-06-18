@@ -11,6 +11,8 @@ const flags = parseArgs(Deno.args, {
 });
 
 // Either resume or document must be provided
+console.log(`flags.resume is ${flags.resume}`);
+console.log(`flags.document is ${flags.document}`);
 assert(flags.resume || flags.document, `Either --resume or --document is required`);
 // Both resume and document cannot be provided at the same time
 assert(!(flags.resume && flags.document), `Cannot provide both --resume and --document at the same time`);

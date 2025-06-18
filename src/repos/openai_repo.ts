@@ -8,16 +8,20 @@ export async function fetchAiCoverLetter(
   jobDescription: string,
   resume: ResumeSchema,
   prompt?: string,
+  // Optional parameters for dependency injection in tests
+  languageModelFn = createLanguageModel,
+  validatorFn = createZodJsonValidator,
+  translatorFn = createJsonTranslator
 ): Promise<CoverLetterSchema> {
   // Check if OpenAI environment variables are valid
   checkOpenAIEnv();
 
-  const model = createLanguageModel(Deno.env.toObject());
-  const validator = createZodJsonValidator(
+  const model = languageModelFn(Deno.env.toObject());
+  const validator = validatorFn(
     { CoverLetterResponse },
     "CoverLetterResponse",
   );
-  const translator = createJsonTranslator(model, validator);
+  const translator = translatorFn(model, validator);
 
   const request = [
     `Build a job application cover letter tailored for my resume:`,
@@ -47,12 +51,13 @@ export async function fetchAiCoverLetter(
     return response.data;
   } catch (error) {
     // If it's already our enhanced error, just rethrow it
-    if (error.message.includes("OpenAI API returned a 403 Forbidden error")) {
+    if (error instanceof Error && error.message.includes("OpenAI API returned a 403 Forbidden error")) {
       throw error;
     }
 
     // Check if it's a 403 error from a different source
-    if (error.message.includes("403: Forbidden") || error.message.includes("REST API error 403")) {
+    if (error instanceof Error && 
+        (error.message.includes("403: Forbidden") || error.message.includes("REST API error 403"))) {
       throw new Error(
         "OpenAI API returned a 403 Forbidden error. This usually means:\n" +
         "1. Your API key is invalid or expired\n" +
