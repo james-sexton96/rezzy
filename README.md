@@ -15,7 +15,9 @@ Options:
   --resume          JSON Resume file path or URL
   --document        PDF document file path (alternative to --resume)
   --jd              Job description path to .txt file
-  --prompt          Optional AI prompt for cover letter generation 
+  --prompt          Optional AI prompt for cover letter generation
+  -o, --output      Output file path for LaTeX (default: based on input filename)
+  --help            Display this help message
 
 Examples:
   deno task rezzy --resume ../resume.json
@@ -24,8 +26,28 @@ Examples:
   deno task rezzy --document ../resume.pdf --jd ../jobs/job-desc.txt 
   deno task rezzy --resume https://www.example.com/resume.json --jd ../jobs/job-desc.txt 
   deno task rezzy --resume ../resume.json --jd ../jobs/job-desc.txt --prompt "Add bullet points to my cover letter describing why I am a good candidate for this job description"
+  deno task rezzy --resume ../resume.json -o my_custom_output
 ```
 > ⚠️ **Note**: rezzy currently renders JSON Resume `interests` array items as the `Areas of Expertise` section.
+
+## Output Options
+
+Rezzy generates two separate output files:
+1. A resume file with the suffix `_resume.tex`
+2. A cover letter file with the suffix `_cover.tex` (when a job description is provided)
+
+By default, the base filename is derived from the input file. For example:
+- If you use `--resume my_resume.json`, the outputs will be `my_resume_resume.tex` and `my_resume_cover.tex`
+- If you use `--document my_resume.pdf`, the outputs will be `my_resume_resume.tex` and `my_resume_cover.tex`
+
+You can specify a custom base output path using the `-o` or `--output` option:
+```bash
+deno task rezzy --resume my_resume.json -o custom_output
+```
+
+This will generate `custom_output_resume.tex` and `custom_output_cover.tex` (if a cover letter is generated).
+
+The application only writes informational logging messages to the console, while the actual LaTeX content is written to the output files.
 
 ## Document Conversion
 When using the `--document` option with a PDF document, rezzy will:

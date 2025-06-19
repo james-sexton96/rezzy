@@ -24,12 +24,28 @@ export async function fetchAiCoverLetter(
   const translator = translatorFn(model, validator);
 
   const request = [
-    `Build a job application cover letter tailored for my resume:`,
-    prompt ? `Also: ${prompt}` : "",
-    `My resume is here in JSON format: `,
+    'Your job\n\n',
+    'You are an experienced resume cover letter writer.\n\n' +
+    'Your task is to write a clear, tailored cover letter based on two inputs:\n' +
+    '1. A JSON resume that contains the candidate\'s background, including work experience, education, skills, and achievements.\n' +
+    '2. A job description that outlines the role, responsibilities, and qualifications required for the position.\n\n' +
+    'Instructions:\n' +
+    '• Carefully read the job description and identify key responsibilities and qualifications.\n' +
+    '• Analyze the resume and find the most relevant experience, skills, and accomplishments that align with the job.\n' +
+    '• Write a concise, customized cover letter (no more than one page) that:\n' +
+    '  • Feels natural, confident, and professional—avoid overly formal or clichéd language.\n' +
+    '  • Shows genuine interest in the role and organization.\n' +
+    '  • Highlights how the candidate\'s experience connects to the job’s goals.\n' +
+    '  • Includes specific examples and value the candidate brings to the position.\n' +
+    '• Avoid repeating the resume. Instead, provide context and connect past work to the new opportunity.\n\n' +
+    'Tone: Honest, human, and articulate. Avoid phrases like "esteemed company" or "I am writing to express..." unless they are truly warranted.\n\n',
+    `Important: If any required information like company address or contact name is missing,\n` +
+    `use placeholder text like [COMPANY ADDRESS] or [HIRING MANAGER NAME].\n\n`,
+    prompt ? `Also: ${prompt}` : "\n",
+    `My resume in JSON format:\n`,
     JSON.stringify(resume, null, 2),
-    `This is the job description: `,
-    jobDescription,
+    `\n\nThis is the job description:\n`,
+    jobDescription
   ].join("\n\n");
 
   try {
