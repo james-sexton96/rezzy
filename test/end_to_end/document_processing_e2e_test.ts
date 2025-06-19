@@ -12,8 +12,7 @@ import dotenv from "dotenv";
  * To run this test:
  * 1. Set up the necessary environment variables:
  *    - OPENAI_API_KEY: Your OpenAI API key
- *    - OPENAI_MODEL: A valid OpenAI model (e.g., gpt-4-turbo)
- *    - OPENAI_VISION_MODEL: A valid OpenAI vision model (e.g., gpt-4o)
+ *    - OPENAI_MODEL: A valid OpenAI model (e.g., gpt-4o)
  * 
  * 2. Ensure you have a test PDF resume file available
  * 
@@ -45,10 +44,9 @@ Deno.test({
   fn: async () => {
     // Check if environment variables are set
     const apiKey = Deno.env.get("OPENAI_API_KEY");
-    const model = Deno.env.get("OPENAI_MODEL");
-    const visionModel = Deno.env.get("OPENAI_VISION_MODEL");
+    const visionModel = Deno.env.get("OPENAI_MODEL");
 
-    if (!apiKey || !model || !visionModel) {
+    if (!apiKey || !visionModel) {
       console.warn("Skipping E2E test: Required environment variables not set");
       return;
     }
@@ -62,8 +60,7 @@ Deno.test({
     }
 
     console.log("Starting E2E test with OpenAI API...");
-    console.log(`Using model: ${model}`);
-    console.log(`Using vision model: ${visionModel}`);
+    console.log(`Using model: ${visionModel}`);
     console.log(`Processing document: ${TEST_PDF_PATH}`);
 
     try {

@@ -12,7 +12,7 @@ import dotenv from "dotenv";
  * To run this test:
  * 1. Set up the necessary environment variables:
  *    - OPENAI_API_KEY: Your OpenAI API key
- *    - OPENAI_MODEL: A valid OpenAI model (e.g., gpt-4-turbo)
+ *    - OPENAI_MODEL: A valid OpenAI model (e.g., gpt-4o)
  * 
  * 2. Run the test with:
  *    deno test --allow-env --allow-net test/end_to_end/cover_letter_generation_e2e_test.ts
@@ -88,8 +88,8 @@ Deno.test({
   name: "E2E: Generate cover letter with actual OpenAI API call",
   fn: async () => {
     // Check if environment variables are set
-    const apiKey = process.env.OPENAI_API_KEY;
-    const model = process.env.OPENAI_MODEL;
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const model = Deno.env.get("OPENAI_MODEL");
     
     if (!apiKey || !model) {
       console.warn("Skipping E2E test: OPENAI_API_KEY or OPENAI_MODEL environment variables not set");

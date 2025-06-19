@@ -176,8 +176,7 @@ Deno.test({
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4-turbo",
-      OPENAI_VISION_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o"
     };
 
     await withMockEnv(mockEnv, async () => {
@@ -198,8 +197,7 @@ Deno.test({
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4-turbo",
-      OPENAI_VISION_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o"
     };
 
     await withMockEnv(mockEnv, async () => {
@@ -231,8 +229,7 @@ Deno.test({
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4-turbo",
-      OPENAI_VISION_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o"
     };
 
     await withMockEnv(mockEnv, async () => {
@@ -269,8 +266,7 @@ Deno.test({
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4-turbo",
-      OPENAI_VISION_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o"
     };
 
     await withMockEnv(mockEnv, async () => {
@@ -308,8 +304,7 @@ Deno.test({
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4-turbo",
-      OPENAI_VISION_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o"
     };
 
     await withMockEnv(mockEnv, async () => {

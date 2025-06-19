@@ -21,15 +21,7 @@ export function validateOpenAIEnv(): { isValid: boolean; message?: string } {
   if (!env.OPENAI_MODEL) {
     return {
       isValid: false,
-      message: "OPENAI_MODEL environment variable is not set. Please set it to a valid OpenAI model name (e.g., gpt-4-turbo)."
-    };
-  }
-
-  // Check if vision model is set
-  if (!env.OPENAI_VISION_MODEL) {
-    return {
-      isValid: false,
-      message: "OPENAI_VISION_MODEL environment variable is not set. Please set it to a valid OpenAI vision model name (e.g., gpt-4o-vision-preview)."
+      message: "OPENAI_MODEL environment variable is not set. Please set it to a valid OpenAI model name (e.g., gpt-4o)."
     };
   }
 
@@ -47,26 +39,12 @@ const validModels = [
     'gpt-4.5'               // advanced high-capacity model [oai_citation:17‡en.wikipedia.org](https://en.wikipedia.org/wiki/ChatGPT?utm_source=chatgpt.com)
 ];
 
-  // List of known valid vision models
-  const validVisionModels = [
-    'gpt-4o'
-    // 'gpt-4o-vision-preview', // these appear to not be available anymore
-    // 'gpt-4-vision-preview'
-  ];
 
   // Check if the model is in the list of valid models
   if (!validModels.includes(env.OPENAI_MODEL)) {
     return {
       isValid: false,
       message: `The specified model '${env.OPENAI_MODEL}' may not be valid or available. Valid models include: ${validModels.join(', ')}. If you're using a newer model that's not in this list, you can ignore this warning.`
-    };
-  }
-
-  // Check if the vision model is in the list of valid vision models
-  if (!validVisionModels.includes(env.OPENAI_VISION_MODEL)) {
-    return {
-      isValid: false,
-      message: `The specified vision model '${env.OPENAI_VISION_MODEL}' may not be valid or available. Valid vision models include: ${validVisionModels.join(', ')}. If you're using a newer vision model that's not in this list, you can ignore this warning.`
     };
   }
 

@@ -6,8 +6,7 @@ Deno.test("validateOpenAIEnv - returns valid when all environment variables are 
   // Mock environment variables
   const mockEnv = {
     OPENAI_API_KEY: "mock-api-key",
-    OPENAI_MODEL: "gpt-4-turbo",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_MODEL: "gpt-4o"
   };
 
   await withMockEnv(mockEnv, async () => {
@@ -20,8 +19,7 @@ Deno.test("validateOpenAIEnv - returns valid when all environment variables are 
 Deno.test("validateOpenAIEnv - returns invalid when API key is missing", async () => {
   // Mock environment variables with missing API key
   const mockEnv = {
-    OPENAI_MODEL: "gpt-4-turbo",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_MODEL: "gpt-4o"
   };
 
   await withMockEnv(mockEnv, async () => {
@@ -37,8 +35,7 @@ Deno.test("validateOpenAIEnv - returns invalid when API key is missing", async (
 Deno.test("validateOpenAIEnv - returns invalid when model is missing", async () => {
   // Mock environment variables with missing model
   const mockEnv = {
-    OPENAI_API_KEY: "mock-api-key",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_API_KEY: "mock-api-key"
   };
 
   await withMockEnv(mockEnv, async () => {
@@ -46,34 +43,17 @@ Deno.test("validateOpenAIEnv - returns invalid when model is missing", async () 
     assertEquals(result.isValid, false);
     assertEquals(
       result.message,
-      "OPENAI_MODEL environment variable is not set. Please set it to a valid OpenAI model name (e.g., gpt-4-turbo)."
+      "OPENAI_MODEL environment variable is not set. Please set it to a valid OpenAI model name (e.g., gpt-4o)."
     );
   });
 });
 
-Deno.test("validateOpenAIEnv - returns invalid when vision model is missing", async () => {
-  // Mock environment variables with missing vision model
-  const mockEnv = {
-    OPENAI_API_KEY: "mock-api-key",
-    OPENAI_MODEL: "gpt-4-turbo"
-  };
-
-  await withMockEnv(mockEnv, async () => {
-    const result = validateOpenAIEnv();
-    assertEquals(result.isValid, false);
-    assertEquals(
-      result.message,
-      "OPENAI_VISION_MODEL environment variable is not set. Please set it to a valid OpenAI vision model name (e.g., gpt-4o-vision-preview)."
-    );
-  });
-});
 
 Deno.test("validateOpenAIEnv - returns invalid when model is not in the list of valid models", async () => {
   // Mock environment variables with invalid model
   const mockEnv = {
     OPENAI_API_KEY: "mock-api-key",
-    OPENAI_MODEL: "invalid-model",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_MODEL: "invalid-model"
   };
 
   await withMockEnv(mockEnv, async () => {
@@ -86,19 +66,18 @@ Deno.test("validateOpenAIEnv - returns invalid when model is not in the list of 
   });
 });
 
-Deno.test("validateOpenAIEnv - returns invalid when vision model is not in the list of valid vision models", async () => {
-  // Mock environment variables with invalid vision model
+Deno.test("validateOpenAIEnv - returns invalid when model is not in the list of valid models (duplicate test)", async () => {
+  // Mock environment variables with another invalid model
   const mockEnv = {
     OPENAI_API_KEY: "mock-api-key",
-    OPENAI_MODEL: "gpt-4-turbo",
-    OPENAI_VISION_MODEL: "invalid-vision-model"
+    OPENAI_MODEL: "invalid-model-2"
   };
 
   await withMockEnv(mockEnv, async () => {
     const result = validateOpenAIEnv();
     assertEquals(result.isValid, false);
     assertEquals(
-      result.message?.includes("The specified vision model 'invalid-vision-model' may not be valid or available"),
+      result.message?.includes("The specified model 'invalid-model-2' may not be valid or available"),
       true
     );
   });
@@ -108,8 +87,7 @@ Deno.test("checkOpenAIEnv - does not throw when environment variables are valid"
   // Mock environment variables
   const mockEnv = {
     OPENAI_API_KEY: "mock-api-key",
-    OPENAI_MODEL: "gpt-4-turbo",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_MODEL: "gpt-4o"
   };
 
   await withMockEnv(mockEnv, async () => {
@@ -121,8 +99,7 @@ Deno.test("checkOpenAIEnv - does not throw when environment variables are valid"
 Deno.test("checkOpenAIEnv - throws when environment variables are invalid", async () => {
   // Mock environment variables with missing API key
   const mockEnv = {
-    OPENAI_MODEL: "gpt-4-turbo",
-    OPENAI_VISION_MODEL: "gpt-4o"
+    OPENAI_MODEL: "gpt-4o"
   };
 
   await withMockEnv(mockEnv, async () => {

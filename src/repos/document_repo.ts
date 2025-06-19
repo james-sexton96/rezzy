@@ -299,7 +299,7 @@ export async function processDocumentWithOpenAI(
 
     // 2. Use the OpenAI API to process the document using the file ID
     const response = await openai.chat.completions.create({
-      model: Deno.env.get("OPENAI_VISION_MODEL") || "gpt-4o",
+      model: Deno.env.get("OPENAI_MODEL") || "gpt-4o",
       messages: [
         { 
           role: "user", 
@@ -319,11 +319,12 @@ export async function processDocumentWithOpenAI(
       response_format: responseFormatJsonSchema
     });
 
-    // Ensure the response body is fully consumed
-    if (response.rawResponse) {
+    // Note: In newer versions of the OpenAI SDK, the rawResponse property might not be directly accessible
+    // We'll use type assertion to safely check for its existence
+    if ((response as any).rawResponse) {
       try {
         // If there's a raw response with a body, ensure it's consumed
-        const rawResponse = response.rawResponse as Response;
+        const rawResponse = (response as any).rawResponse as Response;
         if (rawResponse.body && !rawResponse.bodyUsed) {
           await rawResponse.text();
         }
