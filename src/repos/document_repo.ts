@@ -245,6 +245,20 @@ export async function processDocumentWithOpenAI(
         file: file,
         purpose: "user_data"
       });
+
+      // Ensure the response body is fully consumed
+      if ((uploadedFile as any).rawResponse) {
+        try {
+          // If there's a raw response with a body, ensure it's consumed
+          const rawResponse = (uploadedFile as any).rawResponse as Response;
+          if (rawResponse.body && !rawResponse.bodyUsed) {
+            await rawResponse.text();
+          }
+        } catch (error) {
+          console.warn("Warning: Error while consuming file upload response body:", error);
+        }
+      }
+
       console.log(`File uploaded successfully with ID: ${uploadedFile.id}`);
     } catch (error) {
       console.error("Error uploading file to OpenAI:", error);
@@ -274,6 +288,7 @@ export async function processDocumentWithOpenAI(
     You are a resume parser. Extract information from the document and format it according to the JSON Resume schema.
 
     If some information is not available in the document, leave those fields empty or omit them.
+    DO NOT MAKE UP ANY INFORMATION!
     Make sure to extract as much information as possible and structure it according to the schema.
     Do not leave out any experience or skills.
     Your response should be valid JSON that follows this schema exactly.
@@ -303,6 +318,19 @@ export async function processDocumentWithOpenAI(
       ],
       response_format: responseFormatJsonSchema
     });
+
+    // Ensure the response body is fully consumed
+    if (response.rawResponse) {
+      try {
+        // If there's a raw response with a body, ensure it's consumed
+        const rawResponse = response.rawResponse as Response;
+        if (rawResponse.body && !rawResponse.bodyUsed) {
+          await rawResponse.text();
+        }
+      } catch (error) {
+        console.warn("Warning: Error while consuming response body:", error);
+      }
+    }
 
     console.log(`Document processed by OpenAI successfully using file ID: ${uploadedFile.id}`);
 
@@ -348,7 +376,21 @@ export async function processDocumentWithOpenAI(
     // Clean up the uploaded file to avoid accumulating files in the OpenAI account
     try {
       console.log(`Cleaning up: Deleting uploaded file with ID: ${uploadedFile.id}...`);
-      await openai.files.delete(uploadedFile.id);
+      const deleteResponse = await openai.files.delete(uploadedFile.id);
+
+      // Ensure the response body is fully consumed
+      if ((deleteResponse as any).rawResponse) {
+        try {
+          // If there's a raw response with a body, ensure it's consumed
+          const rawResponse = (deleteResponse as any).rawResponse as Response;
+          if (rawResponse.body && !rawResponse.bodyUsed) {
+            await rawResponse.text();
+          }
+        } catch (error) {
+          console.warn("Warning: Error while consuming file deletion response body:", error);
+        }
+      }
+
       console.log(`Cleanup successful: File with ID: ${uploadedFile.id} deleted`);
     } catch (cleanupError) {
       // Just log the error but don't fail the operation

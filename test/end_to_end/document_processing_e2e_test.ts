@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { processDocumentWithOpenAI } from "../../src/repos/document_repo.ts";
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
+import dotenv from "dotenv";
 
 /**
  * END-TO-END TEST: Document Processing with OpenAI
@@ -23,15 +24,24 @@ import { ResumeSchema } from "@kurone-kito/jsonresume-types";
  * or when significant changes are made to the OpenAI integration code.
  */
 
+// Load environment variables.
+const __dirname = new URL('.', import.meta.url).pathname;
+dotenv.config({
+    path: `${__dirname}../../.env`,
+    override: false // Use environment variables as default
+});
+
 // Path to a test PDF resume file
 // Replace this with the path to an actual PDF resume file on your system
-const TEST_PDF_PATH = "./resume.pdf";
+const TEST_PDF_PATH = "./test/end_to_end/dummy_resume_JOE_SCHMOE.pdf";
 
 // This test is ignored by default to prevent accidental API calls
 // Remove the ignore property to run the test
 Deno.test({
-  // ignore: true, // Set to false to run the test
+  ignore: true, // Set to false to run the test
   name: "E2E: Process document with actual OpenAI API call",
+  sanitizeResources: false, // Disable resource sanitization to prevent fetch response body leak errors
+  sanitizeOps: false, // Disable op sanitization as well
   fn: async () => {
     // Check if environment variables are set
     const apiKey = Deno.env.get("OPENAI_API_KEY");

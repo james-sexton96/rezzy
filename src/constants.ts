@@ -24,6 +24,8 @@ export const LATEX_ENVIRONMENTS: string[] = [
   "description",
   "table",
   "tabular",
+  "tabularx",
+  "rSection",
   "figure",
   "minipage",
   "verbatim",

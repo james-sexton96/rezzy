@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { fetchAiCoverLetter } from "../../src/repos/openai_repo.ts";
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
+import dotenv from "dotenv";
 
 /**
  * END-TO-END TEST: Cover Letter Generation with OpenAI
@@ -19,6 +20,13 @@ import { ResumeSchema } from "@kurone-kito/jsonresume-types";
  * This test should be run manually and infrequently, such as before major releases
  * or when significant changes are made to the OpenAI integration code.
  */
+
+// Load environment variables.
+const __dirname = new URL('.', import.meta.url).pathname;
+dotenv.config({
+    path: `${__dirname}../../.env`,
+    override: false // Use environment variables as default
+});
 
 // Sample resume data for testing
 const sampleResume: ResumeSchema = {
@@ -76,11 +84,12 @@ Responsibilities:
 // This test is ignored by default to prevent accidental API calls
 // Remove the ignore property to run the test
 Deno.test({
+  ignore: true, // Set to false to run the test
   name: "E2E: Generate cover letter with actual OpenAI API call",
   fn: async () => {
     // Check if environment variables are set
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    const model = Deno.env.get("OPENAI_MODEL");
+    const apiKey = process.env.OPENAI_API_KEY;
+    const model = process.env.OPENAI_MODEL;
     
     if (!apiKey || !model) {
       console.warn("Skipping E2E test: OPENAI_API_KEY or OPENAI_MODEL environment variables not set");
@@ -122,8 +131,7 @@ Deno.test({
       console.error("E2E test failed:", error);
       throw error;
     }
-  },
-  ignore: true // Set to false to run the test
+  }
 });
 
 /**

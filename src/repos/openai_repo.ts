@@ -24,10 +24,10 @@ export async function fetchAiCoverLetter(
   const translator = translatorFn(model, validator);
 
   const request = [
-    'Your job\n\n',
-    'You are an experienced resume cover letter writer.\n\n' +
+    'Your job:\n',
+    'You are an experienced resume cover letter writer. ' +
     'Your task is to write a clear, tailored cover letter based on two inputs:\n' +
-    '1. A JSON resume that contains the candidate\'s background, including work experience, education, skills, and achievements.\n' +
+    '1. A JSON resume that contains the candidate\'s background, including work experience, education, skills, and achievements. ' +
     '2. A job description that outlines the role, responsibilities, and qualifications required for the position.\n\n' +
     'Instructions:\n' +
     '• Carefully read the job description and identify key responsibilities and qualifications.\n' +
@@ -39,8 +39,9 @@ export async function fetchAiCoverLetter(
     '  • Includes specific examples and value the candidate brings to the position.\n' +
     '• Avoid repeating the resume. Instead, provide context and connect past work to the new opportunity.\n\n' +
     'Tone: Honest, human, and articulate. Avoid phrases like "esteemed company" or "I am writing to express..." unless they are truly warranted.\n\n',
-    `Important: If any required information like company address or contact name is missing,\n` +
-    `use placeholder text like [COMPANY ADDRESS] or [HIRING MANAGER NAME].\n\n`,
+    'Important: If any information is missing, DO NOT MAKE THEM UP. For example, if a company address or contact name is missing, ' +
+    'do not create a fictitional one. USE ONLY THE DATA IN THE RESUME AND JOB DESCRIPTION CONTEXT.\n\n',
+    // 'use placeholder text like [COMPANY ADDRESS] or [HIRING MANAGER NAME].\n\n',
     prompt ? `Also: ${prompt}` : "\n",
     `My resume in JSON format:\n`,
     JSON.stringify(resume, null, 2),
