@@ -1,10 +1,16 @@
 import { Rezzy } from "./rezzy.ts";
+import dotenv from "dotenv";
+import * as path from "path";
 import { parseArgs } from "jsr:@std/cli/parse-args";
 import { assert } from "@std/assert";
 import { logTempFile } from "./logger.ts";
 import { fetchAiCoverLetter } from "./repos/openai_repo.ts";
 import { fetchResume } from "./repos/resume_repo.ts";
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
+
+// Load environment variables.
+// const __dirname = new URL('.', import.meta.url).pathname;
+// dotenv.config({path: path.join(__dirname, "../.env")});
 
 const flags = parseArgs(Deno.args, {
   string: ["resume", "jd", "prompt", "document"],

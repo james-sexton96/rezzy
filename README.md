@@ -79,17 +79,23 @@ Tests are organized in a dedicated `test/` directory that mirrors the structure 
 
 ```
 test/
-├── latex_test.ts
-├── main_test.ts
-├── test_utils.ts
-├── renderers/
-│   └── latex_cover_letter_renderer_test.ts
-├── repos/
-│   ├── document_repo_test.ts
-│   ├── openai_repo_test.ts
-│   └── resume_repo_test.ts
-└── utils/
-    └── openai_utils_test.ts
+├── unit/                  # Unit tests for individual components
+│   ├── latex_test.ts
+│   ├── main_test.ts
+│   ├── test_utils.ts
+│   ├── renderers/
+│   │   └── latex_cover_letter_renderer_test.ts
+│   ├── repos/
+│   │   ├── document_repo_test.ts
+│   │   ├── openai_repo_test.ts
+│   │   └── resume_repo_test.ts
+│   └── utils/
+│       └── openai_utils_test.ts
+└── regression/            # Regression tests for end-to-end workflows
+    ├── resume_generation_test.ts
+    ├── cover_letter_generation_test.ts
+    ├── document_processing_test.ts
+    └── environment_validation_test.ts
 ```
 
 ### Running Tests
@@ -100,7 +106,66 @@ To run all tests:
 deno task test
 ```
 
-This will run all tests in the `test/` directory with the necessary permissions.
+### Test Types
+
+The project includes two types of tests:
+
+1. **Unit Tests**: Located in the `test/unit/` directory, these tests verify the behavior of individual components in isolation. They use mocks and stubs to avoid dependencies on external services.
+
+2. **Regression Tests**: Located in the `test/regression/` directory, these tests verify workflows and ensure that previously fixed bugs don't reappear. They test the integration between components and ensure the application handles edge cases correctly. These tests use mocks for external services like OpenAI to make them fast, reliable, and free to run.
+
+The regression tests cover the following areas:
+- Resume generation from JSON data
+- Cover letter generation and integration with resume data
+- Document processing with OpenAI (using mocks)
+- Environment variable validation
+
+### End-to-End Testing
+
+While the regression tests provide good coverage of the application's functionality, they don't test the actual integration with external services like OpenAI. For true end-to-end testing, you would need to make actual API calls to OpenAI, which has some considerations:
+
+- **Cost**: OpenAI API calls are not free and will incur charges
+- **Rate Limits**: You may hit rate limits if running many tests
+- **API Keys**: You need valid API keys with appropriate permissions
+- **Reliability**: Tests may fail due to service disruptions or changes in the API
+
+If you want to perform end-to-end testing with real OpenAI API calls, you can create custom test scripts that:
+
+1. Set up the necessary environment variables (API keys, models, etc.)
+2. Make actual API calls to OpenAI
+3. Verify the results
+
+These tests should be run manually and infrequently, such as before major releases or when significant changes are made to the OpenAI integration code.
+
+The project includes example end-to-end tests in the `test/end_to_end/` directory:
+
+- `cover_letter_generation_e2e_test.ts`: Tests the cover letter generation with real OpenAI API calls
+- `document_processing_e2e_test.ts`: Tests the document processing with real OpenAI API calls
+
+These tests are ignored by default to prevent accidental API calls. To run them:
+
+```bash
+# Set up environment variables
+export OPENAI_API_KEY=your_actual_api_key
+export OPENAI_MODEL=gpt-4-turbo
+export OPENAI_VISION_MODEL=gpt-4o
+
+# For cover letter generation test
+deno test --allow-env --allow-net test/end_to_end/cover_letter_generation_e2e_test.ts
+
+# For document processing test (requires a test PDF file)
+deno test --allow-env --allow-read --allow-write --allow-net test/end_to_end/document_processing_e2e_test.ts
+```
+
+You'll need to edit the test files to:
+1. Set `ignore: false` to enable the test
+2. For document processing, update the `TEST_PDF_PATH` to point to a real PDF resume
+
+To run all tests in the `test/` directory with the necessary permissions:
+
+```bash
+deno task test
+```
 
 ### Writing Tests
 
