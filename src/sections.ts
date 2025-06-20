@@ -15,25 +15,50 @@ export function buildPreamble(resume: ResumeSchema): string[] {
   const hspace = latexCommand("hspace", ["0em"]);
   const rlap = latexCommand("rlap", ["#1"]);
 
-  const hrefs = [
-    latexCommand("href", [`mailto:${email}`, email]),
-    latexCommand("href", [url, url]),
-    ...profiles.map((it) => latexCommand("href", [it.url, it.url])),
-  ].join(" \\\\ ");
+  // Prevent duplicate links by checking if url is already in profiles
+  const profileUrls = profiles.map(profile => profile.url);
+  const uniqueLinks = [
+    email ? latexCommand("href", [`mailto:${email}`, email]) : null,
+    // Only include the url if it's defined and not already in profiles
+    url && !profileUrls.includes(url) ? latexCommand("href", [url, url]) : null,
+    ...profiles.map((it) => it.url ? latexCommand("href", [it.url, it.url]) : null),
+  ].filter(Boolean).join(" \\\\ ");
+
+  // Format address parts only if they're defined
+  const formatAddress = () => {
+    const parts = [];
+    if (phone) parts.push(phone);
+
+    const locationParts = [];
+    if (city) locationParts.push(city);
+    if (region) locationParts.push(region);
+
+    const locationStr = locationParts.join(", ");
+    if (locationStr) parts.push(locationStr);
+
+    return parts.join(" \\\\ ");
+  };
 
   return [
-    latexCommand("documentclass", ["resume"]),
+    latexCommand("documentclass", ["article"]),
     latexCommand(
       "usepackage",
       ["geometry"],
       "left=0.4 in,top=0.4in,right=0.4 in,bottom=0.4in",
     ),
     latexCommand("usepackage", ["tabularx"]),
+    latexCommand("usepackage", ["hyperref"], "colorlinks=true, linkcolor=blue, urlcolor=blue"),
     latexNewCommand("itab", 1, `${hspace}${rlap}`, "1"),
-    latexCommand("name", [name]),
-    latexCommand("address", [`${phone} \\\\ ${city}, ${region}`]),
-    latexCommand("address", [hrefs]),
+    // Define the commands and environments that were expected to be in resume.cls
+    latexNewCommand("name", 1, "\\begin{center}{\\Large\\textbf{#1}}\\end{center}"),
+    latexNewCommand("address", 1, "\\begin{center}#1\\end{center}"),
+    // Define the rSection environment
+    "\\newenvironment{rSection}[1]{\\section*{#1}\\hrule\\vspace{0.5em}}{\\vspace{1em}}",
     latexCommand("begin", ["document"]),
+    // Use the newly defined commands
+    latexCommand("name", [name]),
+    ...(formatAddress() ? [latexCommand("address", [formatAddress()])] : []),
+    ...(uniqueLinks ? [latexCommand("address", [uniqueLinks])] : []),
   ];
 }
 

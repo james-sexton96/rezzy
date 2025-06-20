@@ -1,7 +1,8 @@
 import { CoverLetterSchema } from "../schemas.ts";
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
-import { latexCommand } from "../latex.ts";
+import { latexCommand, latexEscapeCharsInObject } from "../latex.ts";
 import { RezzyRenderer } from "../interfaces.ts";
+import { LATEX_CHARS } from "../constants.ts";
 
 export class LatexCoverLetterRenderer implements RezzyRenderer {
   constructor(
@@ -40,35 +41,120 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
     const { phone, email, url, profiles = [] } = this.resume.basics ?? {};
     const { city, region } = this.resume.basics?.location ?? {};
 
+    // Format location only if city or region is defined
+    const formatLocation = () => {
+      const locationParts = [];
+      if (city) locationParts.push(city);
+      if (region) locationParts.push(region);
+      return locationParts.join(", ");
+    };
+
+    const location = formatLocation();
+
+    // Format contact line with phone and location
+    const contactLine = () => {
+      const parts = [];
+      if (phone) parts.push(`{${phone}}`);
+      if (location) parts.push(location);
+      return parts.length > 0 ? parts.join(" $\\diamond$ ") + " \\\\" : "";
+    };
+
+    // Prevent duplicate links by checking if url is already in profiles
+    const profileUrls = profiles.map(profile => profile.url);
+
+    // Build links array with email, url (if not in profiles), and profiles
+    const links = [];
+    if (email) links.push(`\\href{mailto:${email}}{${email}}`);
+    if (url && !profileUrls.includes(url)) links.push(`\\href{${url}}{${url}}`);
+
+    // Add profile links
+    const profileLinks = profiles
+      .filter(profile => profile.url)
+      .map(profile => latexCommand("href", [profile.url, profile.url]));
+
+    // Join all links with diamond separator
+    const linksLine = [...links, ...profileLinks].join(" $\\diamond$ ");
+
     return [
       `\\begin{center}`,
       `{\\LARGE\\bfseries\\color{blackcolor} ${fullName}} \\\\[-0.2em]`,
       `\\vspace{.75em}`,
-      `{${phone}} $\\diamond$ ${city}, ${region}  \\\\`,
+      contactLine(),
       `\\vspace{.5em}`,
-      `\\href{mailto:${email}}{${email}} $\\diamond$`,
-      `\\href{${url}}{${url}} $\\diamond$`,
-      ...profiles.map((it) => latexCommand("href", [it.url, it.url])),
+      linksLine,
       `\\noindent\\rule{\\textwidth}{.75pt}`,
       `\\end{center}`,
     ];
   }
 
   private buildBody(): string[] {
-    const { companyCity, companyState, companyZipCode, letterBody } =
+    // Get the raw letter data without escaping
+    const { companyCity, companyState, companyZipCode, letterBody, greeting, companyStreetAddress } = 
       this.letter;
-    const cityStateZip = `${companyCity}, ${companyState} ${companyZipCode}`;
-    const addressLine =
-      `${this.letter.companyStreetAddress} \\\\ ${cityStateZip}`;
+
+    // Escape special LaTeX characters in the letter data, but not square brackets
+    const escapedGreeting = latexEscapeCharsInObject({ text: greeting }, LATEX_CHARS).text;
+    const escapedLetterBody = latexEscapeCharsInObject({ text: letterBody }, LATEX_CHARS).text;
+
+    // Protect square brackets in address fields by enclosing them in curly braces
+    const protectBrackets = (text: string): string => {
+      if (!text) return '';
+      return text.replace(/\[([^\]]+)\]/g, '{[}$1{]}');
+    };
+
+    const protectedCompanyAddress = protectBrackets(companyStreetAddress);
+    const protectedCompanyCity = protectBrackets(companyCity);
+    const protectedCompanyState = protectBrackets(companyState);
+    const protectedCompanyZipCode = protectBrackets(companyZipCode);
+
+    // Format the city, state, zip only if they're defined
+    const formatCityStateZip = () => {
+      const parts = [];
+
+      // Add city and state if defined
+      if (protectedCompanyCity) {
+        parts.push(protectedCompanyCity);
+        if (protectedCompanyState) {
+          parts[parts.length - 1] += `, ${protectedCompanyState}`;
+        }
+      } else if (protectedCompanyState) {
+        parts.push(protectedCompanyState);
+      }
+
+      // Add zip code if defined
+      if (protectedCompanyZipCode) {
+        parts.push(protectedCompanyZipCode);
+      }
+
+      return parts.join(' ');
+    };
+
+    // Format the complete address
+    const formatAddress = () => {
+      const parts = [];
+
+      if (protectedCompanyAddress) {
+        parts.push(protectedCompanyAddress);
+      }
+
+      const cityStateZip = formatCityStateZip();
+      if (cityStateZip) {
+        parts.push(cityStateZip);
+      }
+
+      return parts.join(' \\\\ ');
+    };
+
+    const addressLine = formatAddress();
 
     return [
       `\\vspace{0.5em}`,
       `{\\fontsize{12}{14}\\selectfont ${new Date().toLocaleDateString()}}`,
       `\\vspace{1em}`,
-      `{\\fontsize{12}{14}\\selectfont \\\\ ${addressLine} \\\\ \\\\}`,
+      addressLine ? `{\\fontsize{12}{14}\\selectfont \\\\ ${addressLine} \\\\ \\\\}` : '',
       `\\vspace{1em}`,
-      `{\\fontsize{12}{14}\\selectfont ${this.letter.greeting} \\\\ ${letterBody}}`,
-    ];
+      `{\\fontsize{12}{14}\\selectfont ${escapedGreeting} \\\\ ${escapedLetterBody}}`,
+    ].filter(Boolean);
   }
 
   private buildFooter(): string[] {
