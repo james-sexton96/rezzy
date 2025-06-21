@@ -162,6 +162,8 @@ export OLLAMA_MODEL=gemma3  # Or another supported model (e.g., llama3, llava)
 - `OLLAMA_HOST` (or `OLLAMA_CLIENT_HOST`/`OLLAMA_API_BASE_URL`): The base URL of your Ollama server
 - `OLLAMA_MODEL`: The Ollama model to use (stick with the newer, more performant models)
 
+You can also place these in a .env at the root of the project and include the ```--env-file=.env``` deno argument
+
 You can also set the provider via environment variable:
 
 ```bash
