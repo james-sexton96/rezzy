@@ -39,11 +39,15 @@ export class Rezzy {
     return [
       ...buildPreamble(escapedResume),
       ...buildObjectiveSection(escapedResume),
-      ...buildInterestsSection(escapedResume),
       ...buildSkillsSection(escapedResume),
       ...buildExperienceSection(escapedResume),
+      // TODO: Add projects
       ...buildEducationSection(escapedResume),
+      // TODO: Add awards
       ...buildCertificationsSection(escapedResume),
+      // TODO: Add languages
+      ...buildInterestsSection(escapedResume),
+      // TODO: Add references
       ...buildFooter(escapedResume),
     ];
   }

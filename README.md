@@ -110,10 +110,9 @@ compiled with any LaTeX compiler:
    - Document preamble with formatting settings
    - Header with name and contact information
    - Objective/summary section
-   - Areas of Expertise section (generated from the `interests` array in JSON
-     Resume)
    - Skills section with categories and keywords
    - Experience section with work history, responsibilities, and achievements
+   - Interests section with categories and keywords
    - Education section with degrees and institutions
    - Certifications section (if available)
 
@@ -125,9 +124,6 @@ compiled with any LaTeX compiler:
    - Greeting
    - Letter body with customized content based on the resume and job description
    - Closing
-
-> ⚠️ **Note**: rezzy currently renders JSON Resume `interests` array items as
-> the `Areas of Expertise` section.
 
 ## Document Conversion
 

@@ -87,49 +87,32 @@ export function buildCertificateLine(cert: Certificate): string {
 }
 
 export function buildInterestsSection(resume: ResumeSchema): string[] {
-  if (!resume.interests?.length) return [];
-  const { interests } = resume;
-  const textwidth = latexCommand("textwidth");
-
-  const lines = [
-    latexCommand("begin", ["table"], "h"),
-    latexCommand("centering"),
-    latexCommand("begin", ["tabularx", textwidth, "XXX"]),
-    ...buildInterestLines(interests, 3),
-    latexCommand("end", ["tabularx"]),
-    latexCommand("end", ["table"]),
-  ];
-
-  return latexSection("Areas of Expertise", lines);
-}
-
-function buildInterestLines(
-  interests: Interest[],
-  numColumns: number,
-): string[] {
-  const delim = (i: number) => (i + 1) % numColumns === 0 ? `\\\\` : `&`;
-  return interests.map((it, i) => `${it.name} ${delim(i)}`);
+  return buildRezzyTableSection("Interests", resume.interests);
 }
 
 export function buildSkillsSection(resume: ResumeSchema): string[] {
-  if (!resume.skills?.length) return [];
+  return buildRezzyTableSection("Skills", resume.skills);
+}
 
-  return latexSection("Skills", [
+export function buildRezzyTableSection(heading: string, items?: Array<Skill | Interest>): string[] {
+  if (!items?.length) return [];
+
+  return latexSection(heading, [
     latexCommand("begin", ["table"], "h"),
     latexCommand("centering"),
     latexCommand("begin", ["tabularx", latexCommand("textwidth"), "lX"]),
-    ...resume.skills.map(buildSkill),
+    ...items.map(buildRezzyTableRow),
     latexCommand("end", ["tabularx"]),
     latexCommand("end", ["table"]),
   ]);
 }
 
-function buildSkill(skill: Skill): string {
-  if (!skill.name) return "";
-  if (!skill.keywords?.length) return "";
+function buildRezzyTableRow(item: Skill | Interest): string {
+  if (!item.name?.length) return "";
+  if (!item.keywords?.length) return "";
 
-  const skillsStr = skill.keywords?.map((it) => it).join(", ");
-  return `${latexCommand("textbf", [skill.name])} & ${skillsStr} \\\\`;
+  const row = item.keywords?.map((it) => it).join(", ");
+  return `${latexCommand("textbf", [item.name])} & ${row} \\\\`;
 }
 
 export function buildExperienceSection(resume: ResumeSchema): string[] {
