@@ -40,25 +40,18 @@ export function buildPreamble(resume: ResumeSchema): string[] {
   };
 
   return [
-    latexCommand("documentclass", ["article"]),
+    latexCommand("documentclass", ["resume"]),
     latexCommand(
       "usepackage",
       ["geometry"],
       "left=0.4 in,top=0.4in,right=0.4 in,bottom=0.4in",
     ),
     latexCommand("usepackage", ["tabularx"]),
-    latexCommand("usepackage", ["hyperref"], "colorlinks=true, linkcolor=blue, urlcolor=blue"),
     latexNewCommand("itab", 1, `${hspace}${rlap}`, "1"),
-    // Define the commands and environments that were expected to be in resume.cls
-    latexNewCommand("name", 1, "\\begin{center}{\\Large\\textbf{#1}}\\end{center}"),
-    latexNewCommand("address", 1, "\\begin{center}#1\\end{center}"),
-    // Define the rSection environment
-    "\\newenvironment{rSection}[1]{\\section*{#1}\\hrule\\vspace{0.5em}}{\\vspace{1em}}",
-    latexCommand("begin", ["document"]),
-    // Use the newly defined commands
     latexCommand("name", [name]),
     ...(formatAddress() ? [latexCommand("address", [formatAddress()])] : []),
     ...(uniqueLinks ? [latexCommand("address", [uniqueLinks])] : []),
+    latexCommand("begin", ["document"]),
   ];
 }
 

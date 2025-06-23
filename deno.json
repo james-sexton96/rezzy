@@ -1,4 +1,5 @@
 {
+  "author": "Nathan Birkes (https://birk.es/)",
   "tasks": {
     "dev": "deno run --watch main.ts",
     "rezzy": "deno run --allow-all src/main.ts rezzy",
