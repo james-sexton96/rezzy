@@ -4,7 +4,7 @@ import { assert } from "@std/assert";
 import { logTempFile } from "./logger.ts";
 import { fetchResume } from "./repos/resume_repo.ts";
 import { ResumeSchema } from "@kurone-kito/jsonresume-types";
-import { getProviderConfig } from "./config.ts";
+import {getProviderConfig, LlmProviderConfig} from "./config.ts";
 import { OpenAIProvider } from "./repos/openai_provider.ts";
 import { OllamaProvider } from "./repos/ollama_provider.ts";
 import { LlmProvider } from "./interfaces.ts";
@@ -190,3 +190,8 @@ const logPath = logTempFile(
   ),
 );
 console.log(`Debug information: ${logPath}`);
+console.log(`\n cat ${resumeOutputPath} | pbcopy \n`);
+
+if (result.latexCoverLetter) {
+  console.log(`\n cat ${coverLetterOutputPath} | pbcopy \n`);
+}
