@@ -94,7 +94,10 @@ export function buildSkillsSection(resume: ResumeSchema): string[] {
   return buildRezzyTableSection("Skills", resume.skills);
 }
 
-export function buildRezzyTableSection(heading: string, items?: Array<Skill | Interest>): string[] {
+export function buildRezzyTableSection(
+  heading: string,
+  items?: Array<Skill | Interest>,
+): string[] {
   if (!items?.length) return [];
 
   return latexSection(heading, [
