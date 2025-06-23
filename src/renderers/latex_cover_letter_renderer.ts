@@ -60,7 +60,7 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
     };
 
     // Prevent duplicate links by checking if url is already in profiles
-    const profileUrls = profiles.map(profile => profile.url);
+    const profileUrls = profiles.map((profile) => profile.url);
 
     // Build links array with email, url (if not in profiles), and profiles
     const links = [];
@@ -69,8 +69,8 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
 
     // Add profile links
     const profileLinks = profiles
-      .filter(profile => profile.url)
-      .map(profile => latexCommand("href", [profile.url, profile.url]));
+      .filter((profile) => profile.url)
+      .map((profile) => latexCommand("href", [profile.url, profile.url]));
 
     // Join all links with diamond separator
     const linksLine = [...links, ...profileLinks].join(" $\\diamond$ ");
@@ -89,17 +89,25 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
 
   private buildBody(): string[] {
     // Get the raw letter data without escaping
-    const { companyCity, companyState, companyZipCode, letterBody, greeting, companyStreetAddress } = 
-      this.letter;
+    const {
+      companyCity,
+      companyState,
+      companyZipCode,
+      letterBody,
+      greeting,
+      companyStreetAddress,
+    } = this.letter;
 
     // Escape special LaTeX characters in the letter data, but not square brackets
-    const escapedGreeting = latexEscapeCharsInObject({ text: greeting }, LATEX_CHARS).text;
-    const escapedLetterBody = latexEscapeCharsInObject({ text: letterBody }, LATEX_CHARS).text;
+    const escapedGreeting =
+      latexEscapeCharsInObject({ text: greeting }, LATEX_CHARS).text;
+    const escapedLetterBody =
+      latexEscapeCharsInObject({ text: letterBody }, LATEX_CHARS).text;
 
     // Protect square brackets in address fields by enclosing them in curly braces
     const protectBrackets = (text: string): string => {
-      if (!text) return '';
-      return text.replace(/\[([^\]]+)\]/g, '{[}$1{]}');
+      if (!text) return "";
+      return text.replace(/\[([^\]]+)\]/g, "{[}$1{]}");
     };
 
     const protectedCompanyAddress = protectBrackets(companyStreetAddress);
@@ -126,7 +134,7 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
         parts.push(protectedCompanyZipCode);
       }
 
-      return parts.join(' ');
+      return parts.join(" ");
     };
 
     // Format the complete address
@@ -142,7 +150,7 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
         parts.push(cityStateZip);
       }
 
-      return parts.join(' \\\\ ');
+      return parts.join(" \\\\ ");
     };
 
     const addressLine = formatAddress();
@@ -151,7 +159,9 @@ export class LatexCoverLetterRenderer implements RezzyRenderer {
       `\\vspace{0.5em}`,
       `{\\fontsize{12}{14}\\selectfont ${new Date().toLocaleDateString()}}`,
       `\\vspace{1em}`,
-      addressLine ? `{\\fontsize{12}{14}\\selectfont \\\\ ${addressLine} \\\\ \\\\}` : '',
+      addressLine
+        ? `{\\fontsize{12}{14}\\selectfont \\\\ ${addressLine} \\\\ \\\\}`
+        : "",
       `\\vspace{1em}`,
       `{\\fontsize{12}{14}\\selectfont ${escapedGreeting} \\\\ ${escapedLetterBody}}`,
     ].filter(Boolean);

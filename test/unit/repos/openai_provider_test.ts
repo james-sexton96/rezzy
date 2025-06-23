@@ -11,11 +11,12 @@ const sampleResume: ResumeSchema = {
     name: "John Doe",
     label: "Software Developer",
     email: "john@example.com",
-  }
+  },
 };
 
 // Sample job description
-const sampleJobDescription = "We are looking for a software developer with experience in TypeScript.";
+const sampleJobDescription =
+  "We are looking for a software developer with experience in TypeScript.";
 
 // Sample cover letter response
 const sampleCoverLetter: CoverLetterSchema = {
@@ -24,17 +25,18 @@ const sampleCoverLetter: CoverLetterSchema = {
   companyCity: "San Francisco",
   companyState: "CA",
   companyZipCode: "94105",
-  letterBody: "I am writing to apply for the Software Developer position."
+  letterBody: "I am writing to apply for the Software Developer position.",
 };
 
 Deno.test({
-  name: "OpenAIProvider.generateCoverLetter - successfully generates cover letter",
+  name:
+    "OpenAIProvider.generateCoverLetter - successfully generates cover letter",
   fn: async () => {
     const provider = new OpenAIProvider();
     // Mock environment variables
     const mockEnv = {
       OPENAI_API_KEY: "mock-api-key",
-      OPENAI_MODEL: "gpt-4o"
+      OPENAI_MODEL: "gpt-4o",
     };
     await withMockEnv(mockEnv, async () => {
       // This test assumes the provider uses the same logic as fetchAiCoverLetter
@@ -44,7 +46,7 @@ Deno.test({
       // const result = await provider.generateCoverLetter(sampleJobDescription, sampleResume);
       // assertEquals(result, sampleCoverLetter);
     });
-  }
+  },
 });
 
 // Add more tests for error handling, prompt inclusion, etc. as needed

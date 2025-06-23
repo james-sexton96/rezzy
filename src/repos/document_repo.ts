@@ -22,15 +22,15 @@ const resumeJsonSchema = {
         "postalCode": "Postal code",
         "city": "City",
         "countryCode": "Country code (e.g., US, UK)",
-        "region": "State or region"
+        "region": "State or region",
       },
       "profiles": [
         {
           "network": "Social network name (e.g., LinkedIn, Twitter)",
           "username": "Username on the platform",
-          "url": "URL to profile"
-        }
-      ]
+          "url": "URL to profile",
+        },
+      ],
     },
     "work": [
       {
@@ -41,9 +41,9 @@ const resumeJsonSchema = {
         "endDate": "End date in YYYY-MM-DD format or 'Present'",
         "summary": "Brief description of role",
         "highlights": [
-          "Key achievements or responsibilities"
-        ]
-      }
+          "Key achievements or responsibilities",
+        ],
+      },
     ],
     "volunteer": [
       {
@@ -54,9 +54,9 @@ const resumeJsonSchema = {
         "endDate": "End date in YYYY-MM-DD format or 'Present'",
         "summary": "Brief description of volunteer work",
         "highlights": [
-          "Key contributions or responsibilities"
-        ]
-      }
+          "Key contributions or responsibilities",
+        ],
+      },
     ],
     "education": [
       {
@@ -68,25 +68,25 @@ const resumeJsonSchema = {
         "endDate": "End date in YYYY-MM-DD format or 'Present'",
         "score": "GPA or other score",
         "courses": [
-          "Relevant courses taken"
-        ]
-      }
+          "Relevant courses taken",
+        ],
+      },
     ],
     "awards": [
       {
         "title": "Award title",
         "date": "Date received in YYYY-MM-DD format",
         "awarder": "Organization that gave the award",
-        "summary": "Brief description of the award"
-      }
+        "summary": "Brief description of the award",
+      },
     ],
     "certificates": [
       {
         "name": "Certificate name",
         "date": "Date obtained in YYYY-MM-DD format",
         "issuer": "Certificate issuer",
-        "url": "Certificate URL"
-      }
+        "url": "Certificate URL",
+      },
     ],
     "publications": [
       {
@@ -94,37 +94,37 @@ const resumeJsonSchema = {
         "publisher": "Publisher name",
         "releaseDate": "Publication date in YYYY-MM-DD format",
         "url": "Publication URL",
-        "summary": "Brief description of the publication"
-      }
+        "summary": "Brief description of the publication",
+      },
     ],
     "skills": [
       {
         "name": "Skill category (e.g., Programming, Languages)",
         "level": "Proficiency level (e.g., Beginner, Intermediate, Advanced)",
         "keywords": [
-          "Specific skills within this category"
-        ]
-      }
+          "Specific skills within this category",
+        ],
+      },
     ],
     "languages": [
       {
         "language": "Language name",
-        "fluency": "Proficiency level (e.g., Native, Fluent, Intermediate)"
-      }
+        "fluency": "Proficiency level (e.g., Native, Fluent, Intermediate)",
+      },
     ],
     "interests": [
       {
         "name": "Interest category",
         "keywords": [
-          "Specific interests within this category"
-        ]
-      }
+          "Specific interests within this category",
+        ],
+      },
     ],
     "references": [
       {
         "name": "Reference name",
-        "reference": "Reference text or recommendation"
-      }
+        "reference": "Reference text or recommendation",
+      },
     ],
     "projects": [
       {
@@ -133,12 +133,12 @@ const resumeJsonSchema = {
         "endDate": "End date in YYYY-MM-DD format or 'Present'",
         "description": "Project description",
         "highlights": [
-          "Key achievements or features"
+          "Key achievements or features",
         ],
-        "url": "Project URL"
-      }
-    ]
-  }
+        "url": "Project URL",
+      },
+    ],
+  },
 };
 
 /**
@@ -163,18 +163,18 @@ export function extractJsonFromMarkdown(text: string): string {
 
   // If the text starts with backticks but doesn't match the full code block pattern,
   // try to extract everything after the first line
-  if (cleanedText.startsWith('```')) {
-    const lines = cleanedText.split('\n');
+  if (cleanedText.startsWith("```")) {
+    const lines = cleanedText.split("\n");
     if (lines.length > 1) {
       // Remove the first line (which contains the backticks)
       lines.shift();
 
       // If the last line contains closing backticks, remove it too
-      if (lines[lines.length - 1].includes('```')) {
+      if (lines[lines.length - 1].includes("```")) {
         lines.pop();
       }
 
-      cleanedText = lines.join('\n').trim();
+      cleanedText = lines.join("\n").trim();
     }
   }
 
@@ -193,7 +193,7 @@ export async function processDocumentWithOpenAI(
   filePath: string,
   openAIClientFn = (apiKey: string) => new OpenAI({ apiKey }),
   readFileFn = Deno.readFile,
-  writeTextFileFn = Deno.writeTextFile
+  writeTextFileFn = Deno.writeTextFile,
 ): Promise<ResumeSchema> {
   console.log("Processing document with OpenAI...");
 
@@ -201,24 +201,30 @@ export async function processDocumentWithOpenAI(
   checkOpenAIEnv();
 
   // Check file extension
-  const fileExtension = filePath.split('.').pop()?.toLowerCase() || '';
+  const fileExtension = filePath.split(".").pop()?.toLowerCase() || "";
 
   // Map file extensions to MIME types
   // NOTE: only pdf supported for now
   const mimeTypeMap: Record<string, string> = {
-    'pdf': 'application/pdf'
+    "pdf": "application/pdf",
     // 'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     // Add more file types as needed
   };
 
   // Check if the file extension is supported
   if (!fileExtension || !mimeTypeMap[fileExtension]) {
-    throw new Error(`Unsupported file type: ${fileExtension}. Only the following file types are supported: ${Object.keys(mimeTypeMap).join(', ')}.`);
+    throw new Error(
+      `Unsupported file type: ${fileExtension}. Only the following file types are supported: ${
+        Object.keys(mimeTypeMap).join(", ")
+      }.`,
+    );
   }
 
   // OpenAI's API only accepts PDF files for this operation
-  if (fileExtension !== 'pdf') {
-    throw new Error(`OpenAI only supports PDF files for document processing. Please convert your ${fileExtension.toUpperCase()} file to PDF before uploading.`);
+  if (fileExtension !== "pdf") {
+    throw new Error(
+      `OpenAI only supports PDF files for document processing. Please convert your ${fileExtension.toUpperCase()} file to PDF before uploading.`,
+    );
   }
 
   try {
@@ -233,7 +239,9 @@ export async function processDocumentWithOpenAI(
     // Get the MIME type based on the file extension
     const mimeType = mimeTypeMap[fileExtension];
 
-    const file = await toFile(fileBuffer, `document.${fileExtension}`, { type: mimeType });
+    const file = await toFile(fileBuffer, `document.${fileExtension}`, {
+      type: mimeType,
+    });
 
     // Variable to store the uploaded file information
     let uploadedFile;
@@ -243,7 +251,7 @@ export async function processDocumentWithOpenAI(
       console.log("Uploading file to OpenAI...");
       uploadedFile = await openai.files.create({
         file: file,
-        purpose: "user_data"
+        purpose: "user_data",
       });
 
       // Ensure the response body is fully consumed
@@ -255,14 +263,21 @@ export async function processDocumentWithOpenAI(
             await rawResponse.text();
           }
         } catch (error) {
-          console.warn("Warning: Error while consuming file upload response body:", error);
+          console.warn(
+            "Warning: Error while consuming file upload response body:",
+            error,
+          );
         }
       }
 
       console.log(`File uploaded successfully with ID: ${uploadedFile.id}`);
     } catch (error) {
       console.error("Error uploading file to OpenAI:", error);
-      throw new Error(`Failed to upload file to OpenAI: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to upload file to OpenAI: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
     }
 
     // Ensure the file was uploaded successfully
@@ -272,15 +287,15 @@ export async function processDocumentWithOpenAI(
 
     // Create a JSON schema response format
     const responseFormatJsonSchema: ResponseFormatJSONSchema = {
-      type: 'json_schema',
+      type: "json_schema",
       json_schema: {
-        name: 'resume_schema',
-        description: 'JSON Resume schema for structured resume data',
+        name: "resume_schema",
+        description: "JSON Resume schema for structured resume data",
         schema: {
           type: "object",
-          properties: resumeJsonSchema
-        }
-      }
+          properties: resumeJsonSchema,
+        },
+      },
     };
 
     // Create a schema prompt for OpenAI to follow
@@ -295,28 +310,31 @@ export async function processDocumentWithOpenAI(
     Wrap the entire response in a "resume" object.
     `;
 
-    console.log(`Sending document to OpenAI for processing using file ID: ${uploadedFile.id}...`);
+    console.log(
+      `Sending document to OpenAI for processing using file ID: ${uploadedFile.id}...`,
+    );
 
     // 2. Use the OpenAI API to process the document using the file ID
     const response = await openai.chat.completions.create({
       model: Deno.env.get("OPENAI_MODEL") || "gpt-4o",
       messages: [
-        { 
-          role: "user", 
+        {
+          role: "user",
           content: [
             { type: "text", text: schemaPrompt },
-            { 
-              type: "text", 
-              text: `Please extract the resume information from this ${fileExtension.toUpperCase()} document:` 
+            {
+              type: "text",
+              text:
+                `Please extract the resume information from this ${fileExtension.toUpperCase()} document:`,
             },
             {
               type: "file",
-              file: { file_id: uploadedFile.id }
-            }
-          ]
-        }
+              file: { file_id: uploadedFile.id },
+            },
+          ],
+        },
       ],
-      response_format: responseFormatJsonSchema
+      response_format: responseFormatJsonSchema,
     });
 
     // Note: In newer versions of the OpenAI SDK, the rawResponse property might not be directly accessible
@@ -333,7 +351,9 @@ export async function processDocumentWithOpenAI(
       }
     }
 
-    console.log(`Document processed by OpenAI successfully using file ID: ${uploadedFile.id}`);
+    console.log(
+      `Document processed by OpenAI successfully using file ID: ${uploadedFile.id}`,
+    );
 
     // Parse the response to get the resume JSON
     const responseContent = response.choices[0].message.content;
@@ -358,25 +378,39 @@ export async function processDocumentWithOpenAI(
       // Write the intermediate JSON to a file with date in the filename
       try {
         const now = new Date();
-        const dateStr = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // Format: HH-MM-SS
+        const dateStr = now.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+        const timeStr = now.toTimeString().split(" ")[0].replace(/:/g, "-"); // Format: HH-MM-SS
         const filename = `resume_${dateStr}_${timeStr}.json`;
 
         console.log(`Writing intermediate JSON to file: ${filename}...`);
         await writeTextFileFn(filename, JSON.stringify(resumeJson, null, 2));
-        console.log(`Successfully wrote intermediate JSON to file: ${filename}`);
+        console.log(
+          `Successfully wrote intermediate JSON to file: ${filename}`,
+        );
       } catch (writeError) {
         // Log the error but don't fail the process
-        console.warn(`Warning: Failed to write intermediate JSON to file: ${writeError instanceof Error ? writeError.message : String(writeError)}`);
+        console.warn(
+          `Warning: Failed to write intermediate JSON to file: ${
+            writeError instanceof Error
+              ? writeError.message
+              : String(writeError)
+          }`,
+        );
       }
     } catch (error) {
       console.error("Error parsing OpenAI response as JSON:", error);
-      throw new Error(`Failed to parse OpenAI response as JSON: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to parse OpenAI response as JSON: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
     }
 
     // Clean up the uploaded file to avoid accumulating files in the OpenAI account
     try {
-      console.log(`Cleaning up: Deleting uploaded file with ID: ${uploadedFile.id}...`);
+      console.log(
+        `Cleaning up: Deleting uploaded file with ID: ${uploadedFile.id}...`,
+      );
       const deleteResponse = await openai.files.delete(uploadedFile.id);
 
       // Ensure the response body is fully consumed
@@ -388,19 +422,31 @@ export async function processDocumentWithOpenAI(
             await rawResponse.text();
           }
         } catch (error) {
-          console.warn("Warning: Error while consuming file deletion response body:", error);
+          console.warn(
+            "Warning: Error while consuming file deletion response body:",
+            error,
+          );
         }
       }
 
-      console.log(`Cleanup successful: File with ID: ${uploadedFile.id} deleted`);
+      console.log(
+        `Cleanup successful: File with ID: ${uploadedFile.id} deleted`,
+      );
     } catch (cleanupError) {
       // Just log the error but don't fail the operation
-      console.warn(`Warning: Failed to delete uploaded file with ID: ${uploadedFile.id}`, cleanupError);
+      console.warn(
+        `Warning: Failed to delete uploaded file with ID: ${uploadedFile.id}`,
+        cleanupError,
+      );
     }
 
     return resumeJson as ResumeSchema;
   } catch (error) {
     console.error("Error processing document with OpenAI:", error);
-    throw new Error(`Failed to process document with OpenAI: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to process document with OpenAI: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
   }
 }

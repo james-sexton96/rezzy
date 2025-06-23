@@ -8,18 +8,22 @@ Deno.test({
   ignore: true, // Set to true by default for real API calls
   fn: async () => {
     // Use real Ollama instance
-    const provider = new OllamaProvider(Deno.env.get("OLLAMA_HOST") ?? "http://localhost:11434", Deno.env.get("OLLAMA_MODEL") ?? "llama3");
+    const provider = new OllamaProvider(
+      Deno.env.get("OLLAMA_HOST") ?? "http://localhost:11434",
+      Deno.env.get("OLLAMA_MODEL") ?? "llama3",
+    );
     const resume: ResumeSchema = {
       basics: {
         name: "Jane Doe",
         label: "Software Engineer",
-        email: "jane@example.com"
-      }
+        email: "jane@example.com",
+      },
     };
-    const jobDescription = "We are looking for a software engineer with experience in TypeScript.";
+    const jobDescription =
+      "We are looking for a software engineer with experience in TypeScript.";
     const result = await provider.generateCoverLetter(jobDescription, resume);
     // Basic checks (customize as needed)
     assertEquals(typeof result, "object");
     assertEquals(typeof result.greeting, "string");
-  }
+  },
 });

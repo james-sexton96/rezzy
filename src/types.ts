@@ -1,4 +1,4 @@
-import {ResumeSchema} from "@kurone-kito/jsonresume-types";
+import { ResumeSchema } from "@kurone-kito/jsonresume-types";
 
 export type ArrayItem<T> = T extends Array<infer U> ? U : never;
 export type Skill = ArrayItem<ResumeSchema["skills"]>;

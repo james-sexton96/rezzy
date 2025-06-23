@@ -8,18 +8,24 @@ const sampleResume: ResumeSchema = {
     name: "John Doe",
     label: "Software Developer",
     email: "john@example.com",
-  }
+  },
 };
 
 // Mock for global fetch
 const originalFetch = globalThis.fetch;
-const mockFetch = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+const mockFetch = async (
+  url: string | URL | Request,
+  init?: RequestInit,
+): Promise<Response> => {
   if (url.toString() === "http://example.com/resume.json") {
     return new Response(JSON.stringify(sampleResume), { status: 200 });
   } else if (url.toString() === "http://example.com/not-found.json") {
     return new Response("Not Found", { status: 404, statusText: "Not Found" });
   } else {
-    return new Response("Server Error", { status: 500, statusText: "Server Error" });
+    return new Response("Server Error", {
+      status: 500,
+      statusText: "Server Error",
+    });
   }
 };
 
@@ -34,8 +40,8 @@ const mockReadTextFile = async (path: string | URL): Promise<string> => {
     // Valid JSON but doesn't match ResumeSchema (missing required fields)
     return JSON.stringify({
       notBasics: {
-        notName: "John Doe"
-      }
+        notName: "John Doe",
+      },
     });
   } else {
     throw new Deno.errors.NotFound(`File not found: ${path}`);
@@ -55,7 +61,7 @@ Deno.test({
       // Restore original fetch
       globalThis.fetch = originalFetch;
     }
-  }
+  },
 });
 
 Deno.test({
@@ -68,13 +74,13 @@ Deno.test({
       await assertRejects(
         async () => await fetchResume("http://example.com/not-found.json"),
         Error,
-        "Not Found"
+        "Not Found",
       );
     } finally {
       // Restore original fetch
       globalThis.fetch = originalFetch;
     }
-  }
+  },
 });
 
 Deno.test({
@@ -90,7 +96,7 @@ Deno.test({
       // Restore original readTextFile
       Deno.readTextFile = originalReadTextFile;
     }
-  }
+  },
 });
 
 Deno.test({
@@ -103,13 +109,13 @@ Deno.test({
       await assertRejects(
         async () => await fetchResume("non-existent-file.json"),
         Deno.errors.NotFound,
-        "File not found"
+        "File not found",
       );
     } finally {
       // Restore original readTextFile
       Deno.readTextFile = originalReadTextFile;
     }
-  }
+  },
 });
 
 Deno.test({
@@ -121,13 +127,13 @@ Deno.test({
     try {
       await assertRejects(
         async () => await fetchResume("invalid-json.json"),
-        SyntaxError
+        SyntaxError,
       );
     } finally {
       // Restore original readTextFile
       Deno.readTextFile = originalReadTextFile;
     }
-  }
+  },
 });
 
 Deno.test({
@@ -150,5 +156,5 @@ Deno.test({
       // Restore original readTextFile
       Deno.readTextFile = originalReadTextFile;
     }
-  }
+  },
 });

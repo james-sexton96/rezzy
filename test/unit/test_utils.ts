@@ -10,7 +10,7 @@
  */
 export async function withMockEnv<T>(
   envVars: Record<string, string>,
-  testFn: () => Promise<T>
+  testFn: () => Promise<T>,
 ): Promise<T> {
   // Save original methods
   const originalGet = Deno.env.get;

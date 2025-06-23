@@ -5,11 +5,11 @@ export interface LlmProvider {
   generateCoverLetter(
     jobDescription: string,
     resume: ResumeSchema,
-    prompt?: string
+    prompt?: string,
   ): Promise<CoverLetterSchema>;
 
   processDocument(
-    filePath: string
+    filePath: string,
   ): Promise<ResumeSchema>;
 }
 

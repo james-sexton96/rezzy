@@ -16,12 +16,14 @@ export function buildPreamble(resume: ResumeSchema): string[] {
   const rlap = latexCommand("rlap", ["#1"]);
 
   // Prevent duplicate links by checking if url is already in profiles
-  const profileUrls = profiles.map(profile => profile.url);
+  const profileUrls = profiles.map((profile) => profile.url);
   const uniqueLinks = [
     email ? latexCommand("href", [`mailto:${email}`, email]) : null,
     // Only include the url if it's defined and not already in profiles
     url && !profileUrls.includes(url) ? latexCommand("href", [url, url]) : null,
-    ...profiles.map((it) => it.url ? latexCommand("href", [it.url, it.url]) : null),
+    ...profiles.map((it) =>
+      it.url ? latexCommand("href", [it.url, it.url]) : null
+    ),
   ].filter(Boolean).join(" \\\\ ");
 
   // Format address parts only if they're defined
@@ -69,7 +71,7 @@ export function buildEducationSection(resume: ResumeSchema): string[] {
 function buildEducationLine(ed: Education): string {
   const area = latexCommand("textbf", [ed.area]);
   const date = latexCommand("hfill", [`${ed.startDate} - ${ed.endDate}`]);
-  return`${area}, ${ed.institution} ${date} \\\\`;
+  return `${area}, ${ed.institution} ${date} \\\\`;
 }
 
 export function buildCertificationsSection(resume: ResumeSchema): string[] {
@@ -146,7 +148,9 @@ function buildWork(work: Work): string[] {
   return [
     ...latexBannerComment(`Experience: ${work.name} - ${work.position}`),
     `${position} ${date} \\\\`,
-    `${latexCommand('textit', [work.name])} ${latexCommand("hfill")} ${location} \\\\`,
+    `${latexCommand("textit", [work.name])} ${
+      latexCommand("hfill")
+    } ${location} \\\\`,
     `{${work.summary}}`,
     ...latexList(work.highlights ?? []),
   ];

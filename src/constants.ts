@@ -60,5 +60,5 @@ export const LATEX_ENVIRONMENTS: string[] = [
   "column",
   "highlight",
   "warningbox",
-  "myquote"
+  "myquote",
 ];
