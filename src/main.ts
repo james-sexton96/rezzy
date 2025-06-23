@@ -93,7 +93,7 @@ try {
     `Cannot provide both --resume and --document at the same time`,
   );
 } catch (error) {
-  console.error(`Error: ${error.message}`);
+  console.error(error);
   console.log(helpText);
   Deno.exit(1);
 }
@@ -128,7 +128,7 @@ function getProviderConfigWithCLI(
 
 // Provider instantiation
 const providerConfig = getProviderConfigWithCLI({
-  cliProvider: flags.provider,
+  cliProvider: flags.provider as CLIProviderType, // TODO
 });
 let provider: LlmProvider;
 if (providerConfig.provider === "openai") {
@@ -139,7 +139,7 @@ if (providerConfig.provider === "openai") {
     providerConfig.model ?? "llama3",
   );
 } else {
-  throw new Error(`Provider '${providerConfig.provider}' not implemented yet.`);
+  throw new Error(`Provider '${flags.provider}' not implemented yet.`);
 }
 
 let resumeJson: ResumeSchema;
@@ -163,7 +163,7 @@ if (flags.resume) {
   const jsonPath = flags.document.replace(/\.(pdf)$/i, ".json");
   await Deno.writeTextFile(jsonPath, JSON.stringify(resumeJson, null, 2));
   console.log(`Converted document saved as JSON: ${jsonPath}`);
-} else {
+} else if (flags.document) {
   // Default: process document directly (for OpenAI or non-PDF)
   resumeJson = await provider.processDocument(flags.document);
   // Optionally save the converted JSON for reference
